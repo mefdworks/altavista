@@ -53,7 +53,7 @@ body{font-family:'Poppins',sans-serif;background:var(--gray-50);color:var(--blac
 .f-sep{width:1px;height:18px;background:var(--gray-200)}
 .fg{display:flex;align-items:center;gap:5px}
 .fl{font-size:12px;color:var(--gray-600);font-weight:500;white-space:nowrap}
-select,input[type=date]{font-family:'Poppins',sans-serif;font-size:12px;padding:5px 8px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);background:var(--white);color:var(--black);outline:none}
+select,input[type=date],input[type=search]{font-family:'Poppins',sans-serif;font-size:12px;padding:5px 8px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);background:var(--white);color:var(--black);outline:none}
 select{cursor:pointer;max-width:240px}
 select:focus,input:focus{border-color:var(--accent)}
 .qbtn{font-family:'Poppins',sans-serif;font-size:12px;font-weight:500;padding:4px 10px;border:1px solid var(--gray-200);background:var(--white);border-radius:999px;cursor:pointer;color:var(--gray-600)}
@@ -80,27 +80,33 @@ select:focus,input:focus{border-color:var(--accent)}
 .t-pos{color:var(--c-pos);font-weight:600} .t-mid{color:var(--c-mid);font-weight:600} .t-neg{color:var(--c-neg);font-weight:600} .t-mute{color:var(--gray-400)}
 
 /* CARTELERA */
-.cart-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:10px;margin-bottom:20px}
-.ev-card{padding:16px;position:relative;overflow:hidden}
+.cart-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(440px,1fr));gap:12px;margin-bottom:20px}
+.ev-card{padding:18px 20px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:14px}
 .ev-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
 .ev-card.otra::before{background:var(--gray-400)}
-.ev-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:4px}
-.ev-name{font-size:15px;font-weight:700;line-height:1.25}
-.ev-days{font-size:12px;font-weight:700;color:var(--accent-fg);white-space:nowrap;text-align:right}
-.ev-days small{display:block;font-weight:500;color:var(--gray-400)}
-.ev-meta{font-size:12px;color:var(--gray-400);margin-bottom:12px}
-.ev-budget{margin-bottom:12px}
-.ev-brow{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-600);margin-bottom:4px;font-variant-numeric:tabular-nums}
-.ev-bar{height:8px;background:var(--gray-100);border-radius:999px;position:relative;overflow:visible}
+.ev-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.ev-name{font-size:17px;font-weight:700;line-height:1.2;margin-bottom:6px}
+.ev-sub{font-size:12px;color:var(--gray-400)}
+.ev-count{text-align:right;white-space:nowrap}
+.ev-count b{display:block;font-size:26px;font-weight:700;line-height:1;color:var(--accent-fg);font-variant-numeric:tabular-nums}
+.ev-count small{display:block;font-size:11px;color:var(--gray-400);margin-top:3px;line-height:1.3}
+.ev-money{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ev-money span{display:block;font-size:11px;color:var(--gray-400);font-weight:500}
+.ev-money b{display:block;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.ev-money .inv b{color:var(--accent-fg)}
+.ev-bar{height:10px;background:var(--gray-100);border-radius:999px;position:relative}
 .ev-bfill{height:100%;border-radius:999px;background:var(--accent);max-width:100%}
-.ev-mark{position:absolute;top:-3px;width:2px;height:14px;background:var(--black)}
-.ev-pace{font-size:12px;margin-top:6px;line-height:1.5}
-.ev-pace .dot{margin-right:5px;vertical-align:1px}
-.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.ev-mark{position:absolute;top:-4px;width:2px;height:18px;background:var(--black)}
+.ev-barlbl{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--gray-600);margin-top:-8px;font-variant-numeric:tabular-nums}
+.ev-status{font-size:12px;line-height:1.45;padding:8px 10px;border-radius:var(--r-sm)}
+.ev-status b{font-weight:700}
+.st-pos{background:#e7f5ec;color:#14532d} .st-mid{background:#fdf1e3;color:#7c3d06} .st-neg{background:#fde8e8;color:#7f1d1d} .st-na{background:var(--gray-100);color:var(--gray-600)}
 .ev-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding-top:12px;border-top:1px solid var(--gray-200)}
 .nm-label{font-size:11px;color:var(--gray-400);font-weight:500}
 .nm-value{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
-.warn{font-size:12px;color:var(--c-mid);font-weight:600}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.sw{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:7px;vertical-align:-1px}
+#f-evento{width:230px}
 
 /* TAGS */
 .tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:999px;white-space:nowrap}
@@ -118,6 +124,8 @@ select:focus,input:focus{border-color:var(--accent)}
 .chart-card{padding:14px;margin-bottom:20px}
 .chart-wrap{height:280px;position:relative}
 .two-col .chart-card{margin-bottom:0}
+.chart-title{font-size:12px;font-weight:700;margin-bottom:8px}
+.chart-title span{font-weight:400;color:var(--gray-400)}
 
 /* TABLAS */
 .tcard{margin-bottom:20px;overflow:hidden}
@@ -187,6 +195,7 @@ select:focus,input:focus{border-color:var(--accent)}
     <a href="#sec-cartelera"><b></b>Cartelera en pauta</a>
     <a href="#sec-evento"><b></b>Por evento</a>
     <a href="#sec-canal"><b></b>Por canal</a>
+    <a href="#sec-mix"><b></b>Mezcla por evento</a>
     <a href="#sec-evo"><b></b>Evolución</a>
     <a href="#sec-pixel"><b></b>Pixel vs GA4</a>
   </div>
@@ -209,9 +218,9 @@ select:focus,input:focus{border-color:var(--accent)}
       <span class="last-upd" id="last-upd"></span>
     </div>
     <div class="tb-row">
-      <div class="fg"><span class="fl">Estado</span><select id="f-estado" onchange="render()"><option value="">Todos</option><option value="ACTIVA">Activas</option><option value="PAUSADA">Pausadas</option><option value="SIN PAUTA">Sin pauta</option></select></div>
-      <div class="fg"><span class="fl">Evento</span><select id="f-evento" onchange="onEvento()"><option value="">Todos</option></select></div>
-      <div class="fg"><span class="fl">Tiquetera</span><select id="f-tiq" onchange="render()"><option value="">Todas</option></select></div>
+      <div class="fg"><span class="fl">Estado</span><select id="f-estado" onchange="onFiltroEvento()"><option value="">Todos</option><option value="ACTIVA">Activas</option><option value="PAUSADA">Pausadas</option><option value="SIN PAUTA">Sin pauta</option></select></div>
+      <div class="fg"><span class="fl">Evento</span><input type="search" id="f-evento" list="ev-list" placeholder="Escribe un evento…" autocomplete="off" onchange="onEvento()" oninput="if(!this.value)onEvento()"><datalist id="ev-list"></datalist></div>
+      <div class="fg"><span class="fl">Tiquetera</span><select id="f-tiq" onchange="onFiltroEvento()"><option value="">Todas</option></select></div>
       <div class="fg"><span class="fl">Canal</span><select id="f-canal" onchange="render()"><option value="">Todos</option></select></div>
       <button class="btn-reset" onclick="resetFilters()">↺ Reset</button>
     </div>
@@ -243,9 +252,12 @@ select:focus,input:focus{border-color:var(--accent)}
     <div class="sec-title" id="sec-canal"><span></span>Por canal<span class="sec-note">boletas e ingresos GA4 de entradasdeteatro.co</span></div>
     <div class="three-col" id="grp-cards"></div>
     <div class="two-col">
-      <div class="card chart-card"><div class="chart-wrap"><canvas id="chart-canal"></canvas></div></div>
+      <div class="card chart-card"><div class="chart-title" id="dona-title"></div><div class="chart-wrap"><canvas id="chart-canal"></canvas></div></div>
       <div class="card tcard" style="margin-bottom:0"><div class="tscroll"><table><thead id="canal-head"></thead><tbody id="canal-body"></tbody></table></div></div>
     </div>
+
+    <div class="sec-title" id="sec-mix"><span></span>Mezcla de canales por evento<span class="sec-note">% de las boletas de cada evento según el canal · eventos con más ventas en el rango</span></div>
+    <div class="card chart-card"><div class="chart-wrap" id="mix-wrap"><canvas id="chart-mix"></canvas></div></div>
 
     <div class="sec-title" id="sec-evo"><span></span>Evolución<span class="sec-note" id="evo-note"></span>
       <span style="margin-left:auto;display:flex;gap:6px">
@@ -255,6 +267,7 @@ select:focus,input:focus{border-color:var(--accent)}
       </span>
     </div>
     <div class="card chart-card"><div class="chart-wrap"><canvas id="chart-evo"></canvas></div></div>
+    <div class="sec-title" style="margin-top:-6px"><span></span>Mes a mes<span class="sec-note">tabla siempre por mes, sin importar la vista de la gráfica</span></div>
     <div class="card tcard"><div class="tscroll"><table><thead id="evo-head"></thead><tbody id="evo-body"></tbody></table></div></div>
 
     <div class="sec-title" id="sec-pixel"><span></span>Pixel vs GA4<span class="sec-note">calidad de medición de los eventos que venden en Entradas de Teatro</span></div>
@@ -349,7 +362,7 @@ function build(rg, pres) {
 
 function prepare() {
   const fill = (id, vals) => { const s = document.getElementById(id), cur = s.value; s.innerHTML = s.options[0].outerHTML + vals.map(v => `<option>${esc(v)}</option>`).join(''); s.value = vals.includes(cur) ? cur : '' };
-  fill('f-evento', Object.keys(EVENTOS).filter(e => e !== 'SIN DATO').sort());
+  fillEventos();
   fill('f-tiq', [...new Set(Object.values(EVENTOS).flatMap(e => e.tiq ? e.tiq.split(' / ') : []))].sort());
   fill('f-canal', [...new Set(RAW.map(r => r.canal))].sort());
   const q = document.getElementById('quick');
@@ -361,24 +374,46 @@ function prepare() {
   ];
   q.innerHTML = QUICK.map((x, i) => `<button class="qbtn" data-q="${i}">${x[0]}</button>`).join('');
   q.querySelectorAll('button').forEach(b => b.onclick = () => { const x = QUICK[+b.dataset.q]; setRange(x[1], x[2]); q.querySelectorAll('button').forEach(o => o.classList.toggle('on', o === b)) });
-  const evUrl = new URLSearchParams(location.search).get('evento'), sel = document.getElementById('f-evento');
-  if (evUrl && !sel.dataset.url) { sel.dataset.url = 1; const op = [...sel.options].find(o => norm(o.value) === norm(evUrl)); if (op) { sel.value = op.value; onEvento(); return } }
+  const evUrl = new URLSearchParams(location.search).get('evento'), inp = document.getElementById('f-evento');
+  if (evUrl && !inp.dataset.url) { inp.dataset.url = 1; const ev = resolverEvento(evUrl); if (ev) { inp.value = ev; onEvento(); return } }
   if (!document.getElementById('f-desde').value) q.querySelectorAll('button')[1].click(); else render();
 }
+// eventos que respetan Estado y Tiquetera: son las sugerencias del buscador
+function eventosVisibles() {
+  const est = document.getElementById('f-estado').value, tiq = document.getElementById('f-tiq').value;
+  return Object.keys(EVENTOS).filter(e => e !== 'SIN DATO' && e !== 'SIN HOMOLOGAR' && (!est || EVENTOS[e].estado === est)
+    && (!tiq || (EVENTOS[e].tiq || '').split(' / ').includes(tiq))).sort();
+}
+function fillEventos() {
+  document.getElementById('ev-list').innerHTML = eventosVisibles().map(e => `<option value="${esc(e)}">`).join('');
+}
+// texto del buscador -> nombre exacto del evento (sin importar tildes ni mayúsculas)
+function resolverEvento(txt) {
+  const n = norm(txt); if (!n) return '';
+  const lista = Object.keys(EVENTOS);
+  return lista.find(e => norm(e) === n) || (lista.filter(e => norm(e).includes(n)).length === 1 ? lista.find(e => norm(e).includes(n)) : '');
+}
+function onFiltroEvento() {
+  fillEventos();
+  const inp = document.getElementById('f-evento'), ev = resolverEvento(inp.value);
+  if (ev && !eventosVisibles().includes(ev)) { inp.value = ''; onEvento(); return }
+  render();
+}
 function onEvento() {
-  const ev = document.getElementById('f-evento').value, p = PRES[ev];
+  const inp = document.getElementById('f-evento'), ev = resolverEvento(inp.value), p = PRES[ev];
+  if (ev) inp.value = ev;
   if (!ev) { document.querySelectorAll('#quick button')[1].click(); return }
   if (p && p.ini) { document.querySelectorAll('#quick button').forEach(o => o.classList.remove('on')); setRange(p.ini, p.fin || today()); return }
   render();
 }
 function setRange(a, b) { document.getElementById('f-desde').value = a; document.getElementById('f-hasta').value = b; render() }
 function onDate() { document.querySelectorAll('#quick button').forEach(o => o.classList.remove('on')); render() }
-function resetFilters() { ['f-estado', 'f-evento', 'f-tiq', 'f-canal'].forEach(id => document.getElementById(id).value = ''); document.querySelectorAll('#quick button')[1].click() }
+function resetFilters() { ['f-estado', 'f-evento', 'f-tiq', 'f-canal'].forEach(id => document.getElementById(id).value = ''); fillEventos(); document.querySelectorAll('#quick button')[1].click() }
 
 // ---------- filtros y agregación ----------
 function filtros() {
   return { desde: document.getElementById('f-desde').value || MIND, hasta: document.getElementById('f-hasta').value || MAXD,
-    estado: document.getElementById('f-estado').value, evento: document.getElementById('f-evento').value,
+    estado: document.getElementById('f-estado').value, evento: resolverEvento(document.getElementById('f-evento').value),
     tiq: document.getElementById('f-tiq').value, canal: document.getElementById('f-canal').value };
 }
 function pasaEvento(ev, f) {
@@ -429,40 +464,53 @@ function renderKpis(f) {
 // ---------- 2. Cartelera ----------
 function renderCartelera(f) {
   const hoy = today();
-  const evs = Object.keys(PRES).filter(ev => PRES[ev].estado === 'ACTIVA' && (!f.evento || ev === f.evento) && (!f.tiq || (EVENTOS[ev]?.tiq || '').includes(f.tiq)));
+  const evs = Object.keys(PRES).filter(ev => PRES[ev].estado === 'ACTIVA' && (!f.evento || ev === f.evento) && (!f.tiq || (EVENTOS[ev]?.tiq || '').includes(f.tiq)))
+    .sort((a, b) => (PRES[a].fin || '9') .localeCompare(PRES[b].fin || '9'));
   if (!evs.length) { document.getElementById('cartelera').innerHTML = '<div class="card ev-card"><span class="t-mute">No hay eventos activos con estos filtros.</span></div>'; return }
-  const cards = evs.map(ev => {
+  document.getElementById('cartelera').innerHTML = evs.map(ev => {
     const p = PRES[ev], edt = vendeEnEdt(ev);
-    const desde = p.ini || MIND, hasta = hoy;
-    const a = suma(RAW.filter(r => r.ev === ev && r.d >= desde && r.d <= hasta));
+    const a = suma(RAW.filter(r => r.ev === ev && r.d >= (p.ini || MIND) && r.d <= hoy));
     const diasFn = p.fin ? daysBetween(hoy, p.fin) : null;
     const presOk = p.pres > 0 && p.pres < PRESUPUESTO_MAX;
-    let pace = '';
-    if (!presOk) pace = `<div class="warn">${p.pres ? 'Revisar el presupuesto en la hoja (' + money(p.pres) + ')' : 'Sin presupuesto en la hoja'}</div>`;
-    else if (p.ini && p.fin) {
-      const total = daysBetween(p.ini, p.fin) + 1, trans = Math.min(Math.max(daysBetween(p.ini, hoy) + 1, 0), total);
-      const esp = trans / total, ejec = a.inv / p.pres, r = esp ? ejec / esp : 0;
-      const [cls, txt] = r > 1.1 ? ['bg-neg', 'Sobre-ejecutando'] : r < 0.9 ? ['bg-mid', 'Atrasado'] : ['bg-pos', 'En ritmo'];
-      const restante = Math.max(p.pres - a.inv, 0), diasRest = Math.max(daysBetween(hoy, p.fin) + 1, 1);
-      pace = `<div class="ev-brow"><span>Invertido <b>${short(a.inv)}</b> de ${short(p.pres)}</span><span>${pct(a.inv, p.pres)}</span></div>
-        <div class="ev-bar"><div class="ev-bfill" style="width:${Math.min(ejec * 100, 100)}%"></div><div class="ev-mark" style="left:calc(${Math.min(esp * 100, 100)}% - 1px)" title="Ritmo esperado a hoy: ${pct(esp, 1)}"></div></div>
-        <div class="ev-pace"><span class="dot ${cls}"></span><b>${txt}</b> <span class="t-mute">· esperado a hoy ${pct(esp, 1)} · quedan ${short(restante)} ≈ ${short(restante / diasRest)}/día</span></div>`;
+    const cuenta = diasFn === null ? '<b>—</b><small>sin fecha de función</small>'
+      : diasFn > 0 ? `<b>${diasFn}</b><small>días para la función<br>${fdate(p.fin)}</small>`
+      : diasFn === 0 ? '<b>Hoy</b><small>es la función</small>' : `<b>✓</b><small>función ${fdate(p.fin)}</small>`;
+    let dinero, barra = '', estado;
+    if (!presOk) {
+      dinero = `<div class="inv"><span>Invertido</span><b>${short(a.inv)}</b></div><div><span>Presupuesto</span><b>—</b></div><div><span>Disponible</span><b>—</b></div>`;
+      estado = `<div class="ev-status st-na">${p.pres ? 'Revisar el presupuesto en la hoja (' + money(p.pres) + ').' : 'Este evento no tiene presupuesto en la hoja PRESUPUESTO.'}</div>`;
+    } else {
+      const disp = Math.max(p.pres - a.inv, 0), ejec = a.inv / p.pres;
+      dinero = `<div class="inv"><span>Invertido</span><b>${short(a.inv)}</b></div><div><span>Presupuesto</span><b>${short(p.pres)}</b></div><div><span>Disponible</span><b>${short(disp)}</b></div>`;
+      if (p.ini && p.fin) {
+        const total = daysBetween(p.ini, p.fin) + 1, trans = Math.min(Math.max(daysBetween(p.ini, hoy) + 1, 0), total);
+        const esp = trans / total, r = esp ? ejec / esp : 0, diasRest = Math.max(daysBetween(hoy, p.fin) + 1, 1);
+        barra = `<div class="ev-bar"><div class="ev-bfill" style="width:${Math.min(ejec * 100, 100)}%"></div><div class="ev-mark" style="left:calc(${Math.min(esp * 100, 100)}% - 1px)"></div></div>
+          <div class="ev-barlbl"><span><b>${pct(ejec, 1)}</b> invertido</span><span>▲ a hoy deberían ir ${short(p.pres * esp)} (${pct(esp, 1)})</span></div>`;
+        const diario = short(disp / diasRest) + ' por día durante ' + diasRest + (diasRest === 1 ? ' día' : ' días');
+        estado = r > 1.1 ? `<div class="ev-status st-neg"><b>Va más rápido que el plan.</b> Para no pasarse, bajar a ≈ ${diario}.</div>`
+          : r < 0.9 ? `<div class="ev-status st-mid"><b>Va atrasado.</b> Para usar todo el presupuesto, invertir ≈ ${diario}.</div>`
+          : `<div class="ev-status st-pos"><b>Va en ritmo.</b> Mantener ≈ ${diario}.</div>`;
+      } else estado = '<div class="ev-status st-na">Faltan las fechas de inicio o función en PRESUPUESTO.</div>';
     }
     const stats = edt ? [
-      ['Boletas', fmt(a.bol)], ['Por pauta', fmt(a.bolP)], ['Costo/boleta', a.bolP ? short(a.inv / a.bolP) : '—'], ['ROAS', roas(a.copP, a.inv)],
+      ['Boletas', fmt(a.bol)], ['Por pauta', fmt(a.bolP)], ['Costo por boleta', a.bolP ? short(a.inv / a.bolP) : '—'], ['ROAS', a.copP ? roas(a.copP, a.inv) : '—'],
     ] : [
-      ['Compras pixel', fmt(a.cm)], ['Valor pixel', short(a.vm)], ['Costo/compra', a.cm ? short(a.inv / a.cm) : '—'], ['ROAS pixel', roas(a.vm, a.inv)],
+      ['Compras pixel', fmt(a.cm)], ['Valor pixel', short(a.vm)], ['Costo por compra', a.cm ? short(a.inv / a.cm) : '—'], ['ROAS pixel', a.vm ? roas(a.vm, a.inv) : '—'],
     ];
     return `<div class="card ev-card${edt ? '' : ' otra'}">
-      <div class="ev-head"><div class="ev-name">${esc(ev)}</div>
-        <div class="ev-days">${diasFn === null ? '—' : diasFn > 0 ? diasFn + ' días' : diasFn === 0 ? 'Hoy' : 'Finalizó'}<small>${diasFn !== null && diasFn >= 0 ? 'para la función' : ''}</small></div></div>
-      <div class="ev-meta"><span class="tag ${edt ? 'tag-edt' : 'tag-otra'}">${esc(EVENTOS[ev]?.tiq || 'Sin tiquetera')}</span> &nbsp;Pauta ${fdate(p.ini)} → función ${fdate(p.fin)}</div>
-      <div class="ev-budget">${pace}</div>
-      <div class="ev-stats">${stats.map(s => `<div><div class="nm-label">${s[0]}</div><div class="nm-value">${s[1]}</div></div>`).join('')}</div>
-      ${edt ? '' : '<div class="kpi-sub" style="margin-top:8px">Vende fuera de Entradas de Teatro: datos del pixel de Meta.</div>'}
+      <div class="ev-head">
+        <div><div class="ev-name">${esc(ev)}</div>
+          <div class="ev-sub"><span class="tag ${edt ? 'tag-edt' : 'tag-otra'}">${esc(EVENTOS[ev]?.tiq || 'Sin tiquetera')}</span> &nbsp;pauta desde ${fdate(p.ini)}</div></div>
+        <div class="ev-count">${cuenta}</div>
+      </div>
+      <div class="ev-money">${dinero}</div>
+      ${barra}
+      ${estado}
+      <div class="ev-stats">${stats.map(x => `<div><div class="nm-label">${x[0]}</div><div class="nm-value">${x[1]}</div></div>`).join('')}</div>
+      ${edt ? '' : '<div class="kpi-sub" style="margin-top:-6px">Vende fuera de Entradas de Teatro: resultados del pixel de Meta.</div>'}
     </div>`;
-  });
-  document.getElementById('cartelera').innerHTML = cards.join('');
+  }).join('');
 }
 
 // ---------- 3. Por evento ----------
@@ -531,18 +579,47 @@ function renderCanales(f) {
       <div><div class="nm-label">Ingresos</div><div class="nm-value">${short(a.cop)}</div></div></div>
       <div class="kpi-sub" style="margin-top:10px">${esc(det)}</div></div>`;
   }).join('');
-  // tabla
+  // tabla con el color de cada canal (el mismo de la dona)
   document.getElementById('canal-head').innerHTML = '<tr><th>Canal</th><th class="r">Boletas</th><th class="r">% boletas</th><th class="r">Ingresos</th><th class="r">Ticket prom.</th></tr>';
-  const maxB = Math.max(...lista.map(x => x.a.bol), 1);
-  document.getElementById('canal-body').innerHTML = lista.map(x => `<tr><td>${esc(x.c)}</td><td class="r">${fmt(x.a.bol)}<span class="mini-bar" style="width:${Math.round(x.a.bol / maxB * 50)}px"></span></td><td class="r">${pct(x.a.bol, tot.bol)}</td><td class="r">${short(x.a.cop)}</td><td class="r">${x.a.bol ? money(x.a.cop / x.a.bol) : '—'}</td></tr>`).join('')
+  document.getElementById('canal-body').innerHTML = lista.map(x => `<tr><td><span class="sw" style="background:${colorCanal(x.c)}"></span>${esc(x.c)}</td><td class="r">${fmt(x.a.bol)}</td><td class="r"><b>${pct(x.a.bol, tot.bol)}</b></td><td class="r">${short(x.a.cop)}</td><td class="r">${x.a.bol ? money(x.a.cop / x.a.bol) : '—'}</td></tr>`).join('')
     + `<tr class="tr-total"><td>Total</td><td class="r">${fmt(tot.bol)}</td><td class="r">100%</td><td class="r">${short(tot.cop)}</td><td class="r">${tot.bol ? money(tot.cop / tot.bol) : '—'}</td></tr>`;
-  // gráfico
+  // dona
+  document.getElementById('dona-title').innerHTML = (f.evento ? esc(f.evento) : 'Todos los eventos') + ` <span>· ${fmt(tot.bol)} boletas</span>`;
   CHARTS.canal?.destroy();
   CHARTS.canal = new Chart(document.getElementById('chart-canal'), {
+    type: 'doughnut',
+    data: { labels: lista.map(x => x.c), datasets: [{ data: lista.map(x => x.a.bol), backgroundColor: lista.map(x => colorCanal(x.c)), borderColor: '#fcfcfa', borderWidth: 2 }] },
+    options: { maintainAspectRatio: false, cutout: '58%',
+      plugins: { legend: { position: 'right', labels: { font: { family: 'Poppins', size: 11 }, boxWidth: 10, generateLabels: ch => ch.data.labels.map((l, i) => ({ text: l + '  ' + pct(ch.data.datasets[0].data[i], tot.bol), fillStyle: ch.data.datasets[0].backgroundColor[i], strokeStyle: 'transparent', index: i })) } },
+        tooltip: { callbacks: { label: c => c.label + ': ' + fmt(c.raw) + ' boletas · ' + pct(c.raw, tot.bol) } } } }
+  });
+  renderMix(f);
+}
+
+const CANAL_COLOR = {
+  'META PAUTA': '#5B8FE8', 'GOOGLE ADS': '#a9c4f2', 'META ORGÁNICO': '#1baf7a', 'BÚSQUEDA ORGÁNICA': '#eb6834', 'DIRECTO': '#050505',
+  'SITIO ASTOR / ALTAVISTA': '#8a6d3b', 'WHATSAPP / CRM': '#25a35a', 'PASARELA DE PAGO': '#c2261c', 'IA': '#7c5cd6', 'TIKTOK': '#ff5c8a',
+  'OTROS REFERIDOS': '#c4c3bc', 'SIN DATO / OTROS': '#e1e0da',
+};
+const colorCanal = c => CANAL_COLOR[c] || '#d6d5cf';
+
+// barra al 100% por evento: qué parte de sus boletas viene de cada canal
+function renderMix(f) {
+  const rs = rows(f).filter(r => r.bol > 0 && r.ev !== 'SIN DATO' && r.ev !== 'SIN HOMOLOGAR');
+  const porEv = {}; rs.forEach(r => { const e = porEv[r.ev] = porEv[r.ev] || { tot: 0, c: {} }; e.tot += r.bol; e.c[r.canal] = (e.c[r.canal] || 0) + r.bol });
+  const evs = Object.keys(porEv).sort((a, b) => porEv[b].tot - porEv[a].tot).slice(0, 14);
+  const canales = Object.keys(CANAL_COLOR).filter(c => evs.some(e => porEv[e].c[c]));
+  document.getElementById('mix-wrap').style.height = Math.max(evs.length * 34 + 70, 160) + 'px';
+  CHARTS.mix?.destroy();
+  CHARTS.mix = new Chart(document.getElementById('chart-mix'), {
     type: 'bar',
-    data: { labels: lista.map(x => x.c), datasets: [{ label: 'Boletas', data: lista.map(x => x.a.bol), backgroundColor: lista.map(x => x.c === PAUTA ? '#5B8FE8' : grupoDe(x.c) === 'Pauta' ? '#8fb2f0' : '#c4c3bc'), borderRadius: 0 }] },
-    options: { indexAxis: 'y', maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => fmt(c.raw) + ' boletas · ' + pct(c.raw, tot.bol) } } },
-      scales: { x: { grid: { color: 'rgba(5,5,5,.06)' }, ticks: { font: { family: 'Poppins', size: 11 } } }, y: { grid: { display: false }, ticks: { font: { family: 'Poppins', size: 11 } } } } }
+    data: { labels: evs.map(e => e + '  (' + fmt(porEv[e].tot) + ')'),
+      datasets: canales.map(c => ({ label: c, data: evs.map(e => (porEv[e].c[c] || 0) / porEv[e].tot * 100), raw: evs.map(e => porEv[e].c[c] || 0), backgroundColor: colorCanal(c), borderColor: '#fcfcfa', borderWidth: { right: 1 } })) },
+    options: { indexAxis: 'y', maintainAspectRatio: false,
+      plugins: { legend: { position: 'top', labels: { font: { family: 'Poppins', size: 11 }, boxWidth: 10 } },
+        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.dataset.raw[c.dataIndex]) + ' boletas · ' + c.raw.toLocaleString('es-CO', { maximumFractionDigits: 0 }) + '%' } } },
+      scales: { x: { stacked: true, max: 100, ticks: { callback: v => v + '%', font: { family: 'Poppins', size: 11 } }, grid: { color: 'rgba(5,5,5,.06)' } },
+        y: { stacked: true, grid: { display: false }, ticks: { font: { family: 'Poppins', size: 11 } } } } }
   });
 }
 
@@ -574,8 +651,11 @@ function renderEvo(f) {
       scales: { y: { position: 'left', grid: { color: 'rgba(5,5,5,.06)' }, ticks: { callback: v => short(v), font: { family: 'Poppins', size: 11 } } },
         y1: { position: 'right', grid: { display: false }, ticks: { font: { family: 'Poppins', size: 11 } } }, x: { grid: { display: false }, ticks: { font: { family: 'Poppins', size: 11 } } } } }
   });
-  document.getElementById('evo-head').innerHTML = '<tr><th>Periodo</th><th class="r">Inversión</th><th class="r">Boletas</th><th class="r">Por pauta</th><th class="r">% pauta</th><th class="r">Ingresos</th><th class="r">Costo/boleta</th><th class="r">ROAS</th></tr>';
-  document.getElementById('evo-body').innerHTML = ps.map((p, i) => { const a = aa[i]; return `<tr><td>${etiqueta(p)}</td><td class="r">${money(a.inv)}</td><td class="r">${fmt(a.bol)}</td><td class="r">${fmt(a.bolP)}</td><td class="r">${pct(a.bolP, a.bol)}</td><td class="r">${short(a.cop)}</td><td class="r">${a.bolPEdt ? money(a.invEdt / a.bolPEdt) : '—'}</td><td class="r">${roas(a.copPEdt, a.invEdt)}</td></tr>` }).reverse().join('');
+  document.getElementById('evo-head').innerHTML = '<tr><th>Mes</th><th class="r">Inversión</th><th class="r">Boletas</th><th class="r">Por pauta</th><th class="r">% pauta</th><th class="r">Ingresos</th><th class="r">Costo/boleta</th><th class="r">ROAS</th></tr>';
+  const pm = {}; rs.forEach(r => (pm[r.d.slice(0, 7)] = pm[r.d.slice(0, 7)] || []).push(r));
+  const meses = Object.keys(pm).sort(), am = meses.map(m => suma(pm[m])), mesTxt = m => new Date(m + '-15T12:00:00Z').toLocaleDateString('es-CO', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  document.getElementById('evo-body').innerHTML = meses.map((p, i) => { const a = am[i]; return `<tr><td>${mesTxt(p)}</td><td class="r">${money(a.inv)}</td><td class="r">${fmt(a.bol)}</td><td class="r">${fmt(a.bolP)}</td><td class="r">${pct(a.bolP, a.bol)}</td><td class="r">${short(a.cop)}</td><td class="r">${a.bolPEdt ? money(a.invEdt / a.bolPEdt) : '—'}</td><td class="r">${roas(a.copPEdt, a.invEdt)}</td></tr>` }).reverse().join('')
+    + (() => { const t = suma(rs); return `<tr class="tr-total"><td>Total</td><td class="r">${money(t.inv)}</td><td class="r">${fmt(t.bol)}</td><td class="r">${fmt(t.bolP)}</td><td class="r">${pct(t.bolP, t.bol)}</td><td class="r">${short(t.cop)}</td><td class="r">${t.bolPEdt ? money(t.invEdt / t.bolPEdt) : '—'}</td><td class="r">${roas(t.copPEdt, t.invEdt)}</td></tr>` })();
 }
 
 // ---------- 6. Pixel vs GA4 ----------
@@ -592,8 +672,14 @@ function renderPixel(f) {
 }
 
 // ---------- navegación ----------
-const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) document.querySelectorAll('.app-sidebar-nav a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id)) }), { rootMargin: '-120px 0px -70% 0px' });
-document.querySelectorAll('.sec-title[id]').forEach(s => io.observe(s));
+// el enlace activo del menú es la última sección cuyo título ya pasó la barra superior
+function marcarSeccion() {
+  const ts = [...document.querySelectorAll('.sec-title[id]')];
+  let act = ts[0];
+  ts.forEach(t => { if (t.getBoundingClientRect().top < 140) act = t });
+  document.querySelectorAll('.app-sidebar-nav a').forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + act.id));
+}
+window.addEventListener('scroll', marcarSeccion, { passive: true });
 load();
 </script>
 </body>
