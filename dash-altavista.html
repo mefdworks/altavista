@@ -98,15 +98,32 @@ select:focus,input:focus{border-color:var(--accent)}
 .ev-bfill{height:100%;border-radius:999px;background:var(--accent);max-width:100%}
 .ev-mark{position:absolute;top:-4px;width:2px;height:18px;background:var(--black)}
 .ev-barlbl{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--gray-600);margin-top:-8px;font-variant-numeric:tabular-nums}
-.ev-status{font-size:12px;line-height:1.45;padding:8px 10px;border-radius:var(--r-sm)}
-.ev-status b{font-weight:700}
-.st-pos{background:#e7f5ec;color:#14532d} .st-mid{background:#fdf1e3;color:#7c3d06} .st-neg{background:#fde8e8;color:#7f1d1d} .st-na{background:var(--gray-100);color:var(--gray-600)}
 .ev-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding-top:12px;border-top:1px solid var(--gray-200)}
 .nm-label{font-size:11px;color:var(--gray-400);font-weight:500}
 .nm-value{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
 .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
 .sw{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:7px;vertical-align:-1px}
 #f-evento{width:230px}
+
+/* ANUNCIOS */
+.ad-ev{padding:14px 16px 16px;margin-bottom:12px}
+.ad-ev-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.ad-ev-head .ev-name{margin:0;font-size:15px}
+.ad-ev-head .kpi-sub{margin:0}
+.ad-strip{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}
+.ad-card{flex:0 0 322px;border:1px solid var(--gray-200);border-radius:var(--r-md);overflow:hidden;display:flex;flex-direction:column;scroll-snap-align:start;background:var(--white)}
+.ad-prev{height:610px;background:var(--gray-100);overflow:hidden;display:flex;justify-content:center}
+.ad-prev iframe{border:0;width:320px;height:100%}
+.ad-prev .t-mute{align-self:center;font-size:12px;padding:20px;text-align:center}
+.ad-body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--gray-200)}
+.ad-name{font-size:12px;font-weight:600;line-height:1.35;word-break:break-word;display:flex;justify-content:space-between;gap:8px}
+.ad-name a{font-weight:500;font-size:11px;color:var(--accent-fg);white-space:nowrap;text-decoration:none}
+.ad-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 6px}
+.ad-nums .nm-value{font-size:14px}
+.ad-share{height:4px;background:var(--gray-100);border-radius:999px}
+.ad-share div{height:100%;background:var(--accent);border-radius:999px}
+.ad-empty{padding:16px;font-size:12px}
+.chk{font-size:12px;color:var(--gray-600);display:flex;align-items:center;gap:6px;cursor:pointer}
 
 /* TAGS */
 .tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:999px;white-space:nowrap}
@@ -197,7 +214,7 @@ select:focus,input:focus{border-color:var(--accent)}
     <a href="#sec-canal"><b></b>Por canal</a>
     <a href="#sec-mix"><b></b>Mezcla por evento</a>
     <a href="#sec-evo"><b></b>Evolución</a>
-    <a href="#sec-pixel"><b></b>Pixel vs GA4</a>
+    <a href="#sec-ads"><b></b>Anuncios</a>
   </div>
   <div class="app-sidebar-foot">
     <img src="data:image/png;base64,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" alt="entradasdeteatro.co">
@@ -270,14 +287,13 @@ select:focus,input:focus{border-color:var(--accent)}
     <div class="sec-title" style="margin-top:-6px"><span></span>Mes a mes<span class="sec-note">tabla siempre por mes, sin importar la vista de la gráfica</span></div>
     <div class="card tcard"><div class="tscroll"><table><thead id="evo-head"></thead><tbody id="evo-body"></tbody></table></div></div>
 
-    <div class="sec-title" id="sec-pixel"><span></span>Pixel vs GA4<span class="sec-note">calidad de medición de los eventos que venden en Entradas de Teatro</span></div>
-    <div class="card tcard">
-      <div class="tscroll"><table><thead id="px-head"></thead><tbody id="px-body"></tbody></table></div>
-      <div class="foot-note">
-        El pixel cuenta <b>compras</b> atribuidas por Meta (7 días clic, 1 día vista); GA4 cuenta <b>boletas</b> por la fuente de la sesión en que se compró.
-        Es normal que no coincidan: una compra puede tener varias boletas, y GA4 no le da a Meta las compras de quien vio el anuncio y volvió después por Google o directo.
-        Una diferencia de valor muy grande indica un problema de medición (pixel sin disparar, valor mal enviado o pasarela que roba la atribución).
-      </div>
+    <div class="sec-title" id="sec-ads"><span></span>Anuncios<span class="sec-note" id="ads-note"></span>
+      <label class="chk" style="margin-left:auto"><input type="checkbox" id="ads-todos" onchange="renderAds(filtros())"> Incluir los que ya no corren</label>
+    </div>
+    <div id="ads-wrap"></div>
+    <div class="foot-note" style="border:0;padding:0 2px 20px">
+      Vista previa de Instagram generada por Meta. Los resultados son del <b>pixel de Meta</b> en el rango de fechas elegido (compras atribuidas a 7 días clic y 1 día vista);
+      GA4 no permite separar las boletas por anuncio. <b>Activo</b> = tuvo inversión en los últimos 3 días con datos. La barra muestra qué parte de la inversión del evento se llevó el anuncio.
     </div>
   </div>
 </div>
@@ -321,8 +337,9 @@ function fetchTab(sheet) {
 function load() {
   document.getElementById('loading').style.display = 'flex';
   document.getElementById('ld-msg').textContent = 'Cargando datos...';
-  Promise.all([fetchTab('RESUMEN GENERAL'), fetchTab('PRESUPUESTO')]).then(([rg, pres]) => {
+  Promise.all([fetchTab('RESUMEN GENERAL'), fetchTab('PRESUPUESTO'), fetchTab('ANUNCIOS').catch(() => []), fetchTab('PREVIEWS').catch(() => [])]).then(([rg, pres, ads, prev]) => {
     build(rg.slice(1), pres.slice(1));
+    buildAds(ads, prev);
     prepare();
     const t = new Date().toLocaleString('es-CO', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
     document.getElementById('last-upd').textContent = 'Datos hasta ' + fdate(MAXD) + ' · cargados ' + t;
@@ -358,6 +375,17 @@ function build(rg, pres) {
   });
   Object.keys(EVENTOS).forEach(ev => EVENTOS[ev].estado = PRES[ev]?.estado || 'SIN PAUTA');
   const ds = RAW.map(r => r.d).sort(); MIND = ds[0]; MAXD = ds[ds.length - 1];
+}
+
+// ANUNCIOS: Fecha | Evento | Campaña | Anuncio | Inversión | Compras | Valor · PREVIEWS: Última fecha | Evento | Campaña | Anuncio | Vista previa
+// (si la pestaña no existe, gviz devuelve otra hoja: se valida el encabezado)
+let ADS = [], PREV = {}, ADS_OK = false;
+function buildAds(ads, prev) {
+  ADS = []; PREV = {};
+  ADS_OK = norm(ads[0]?.[3]) === 'ANUNCIO' && norm(prev[0]?.[4]) === 'VISTA PREVIA';
+  if (!ADS_OK) return;
+  ads.slice(1).forEach(x => { const d = iso(x[0]); if (d) ADS.push({ d, ev: String(x[1] || '').trim(), camp: String(x[2] || '').trim(), ad: String(x[3] || '').trim(), inv: num(x[4]), cm: num(x[5]), vm: num(x[6]) }) });
+  prev.slice(1).forEach(x => { const u = String(x[4] || '').trim(); if (u.startsWith('http')) PREV[String(x[2]).trim() + '|' + String(x[3]).trim()] = u });
 }
 
 function prepare() {
@@ -441,7 +469,7 @@ function render() {
   const p = PRES[f.evento], ventana = p && p.ini === f.desde && (p.fin || today()) === f.hasta;
   document.getElementById('rango-note').textContent = fdate(f.desde) + ' – ' + fdate(f.hasta) + ' · ' + (daysBetween(f.desde, f.hasta) + 1) + ' días'
     + (ventana ? ' · ventana de pauta de ' + f.evento + ' (PRESUPUESTO)' : '') + (f.hasta > today() ? ' · datos hasta hoy' : '');
-  renderKpis(f); renderCartelera(f); renderEventos(f); renderCanales(f); renderEvo(f); renderPixel(f);
+  renderKpis(f); renderCartelera(f); renderEventos(f); renderCanales(f); renderEvo(f); renderAds(f);
 }
 
 // ---------- 1. KPIs ----------
@@ -475,23 +503,18 @@ function renderCartelera(f) {
     const cuenta = diasFn === null ? '<b>—</b><small>sin fecha de función</small>'
       : diasFn > 0 ? `<b>${diasFn}</b><small>días para la función<br>${fdate(p.fin)}</small>`
       : diasFn === 0 ? '<b>Hoy</b><small>es la función</small>' : `<b>✓</b><small>función ${fdate(p.fin)}</small>`;
-    let dinero, barra = '', estado;
+    let dinero, barra = '';
     if (!presOk) {
       dinero = `<div class="inv"><span>Invertido</span><b>${short(a.inv)}</b></div><div><span>Presupuesto</span><b>—</b></div><div><span>Disponible</span><b>—</b></div>`;
-      estado = `<div class="ev-status st-na">${p.pres ? 'Revisar el presupuesto en la hoja (' + money(p.pres) + ').' : 'Este evento no tiene presupuesto en la hoja PRESUPUESTO.'}</div>`;
     } else {
       const disp = Math.max(p.pres - a.inv, 0), ejec = a.inv / p.pres;
       dinero = `<div class="inv"><span>Invertido</span><b>${short(a.inv)}</b></div><div><span>Presupuesto</span><b>${short(p.pres)}</b></div><div><span>Disponible</span><b>${short(disp)}</b></div>`;
       if (p.ini && p.fin) {
         const total = daysBetween(p.ini, p.fin) + 1, trans = Math.min(Math.max(daysBetween(p.ini, hoy) + 1, 0), total);
-        const esp = trans / total, r = esp ? ejec / esp : 0, diasRest = Math.max(daysBetween(hoy, p.fin) + 1, 1);
+        const esp = trans / total;
         barra = `<div class="ev-bar"><div class="ev-bfill" style="width:${Math.min(ejec * 100, 100)}%"></div><div class="ev-mark" style="left:calc(${Math.min(esp * 100, 100)}% - 1px)"></div></div>
           <div class="ev-barlbl"><span><b>${pct(ejec, 1)}</b> invertido</span><span>▲ a hoy deberían ir ${short(p.pres * esp)} (${pct(esp, 1)})</span></div>`;
-        const diario = short(disp / diasRest) + ' por día durante ' + diasRest + (diasRest === 1 ? ' día' : ' días');
-        estado = r > 1.1 ? `<div class="ev-status st-neg"><b>Va más rápido que el plan.</b> Para no pasarse, bajar a ≈ ${diario}.</div>`
-          : r < 0.9 ? `<div class="ev-status st-mid"><b>Va atrasado.</b> Para usar todo el presupuesto, invertir ≈ ${diario}.</div>`
-          : `<div class="ev-status st-pos"><b>Va en ritmo.</b> Mantener ≈ ${diario}.</div>`;
-      } else estado = '<div class="ev-status st-na">Faltan las fechas de inicio o función en PRESUPUESTO.</div>';
+      }
     }
     const stats = edt ? [
       ['Boletas', fmt(a.bol)], ['Por pauta', fmt(a.bolP)], ['Costo por boleta', a.bolP ? short(a.inv / a.bolP) : '—'], ['ROAS', a.copP ? roas(a.copP, a.inv) : '—'],
@@ -506,7 +529,6 @@ function renderCartelera(f) {
       </div>
       <div class="ev-money">${dinero}</div>
       ${barra}
-      ${estado}
       <div class="ev-stats">${stats.map(x => `<div><div class="nm-label">${x[0]}</div><div class="nm-value">${x[1]}</div></div>`).join('')}</div>
       ${edt ? '' : '<div class="kpi-sub" style="margin-top:-6px">Vende fuera de Entradas de Teatro: resultados del pixel de Meta.</div>'}
     </div>`;
@@ -658,17 +680,47 @@ function renderEvo(f) {
     + (() => { const t = suma(rs); return `<tr class="tr-total"><td>Total</td><td class="r">${money(t.inv)}</td><td class="r">${fmt(t.bol)}</td><td class="r">${fmt(t.bolP)}</td><td class="r">${pct(t.bolP, t.bol)}</td><td class="r">${short(t.cop)}</td><td class="r">${t.bolPEdt ? money(t.invEdt / t.bolPEdt) : '—'}</td><td class="r">${roas(t.copPEdt, t.invEdt)}</td></tr>` })();
 }
 
-// ---------- 6. Pixel vs GA4 ----------
-function renderPixel(f) {
-  const rs = rows(f, true, false).filter(r => vendeEnEdt(r.ev));
-  const por = {}; rs.forEach(r => (por[r.ev] = por[r.ev] || []).push(r));
-  const lista = Object.entries(por).map(([ev, xs]) => ({ ev, a: suma(xs) })).filter(x => x.a.inv > 0).sort((p, q) => q.a.inv - p.a.inv);
-  document.getElementById('px-head').innerHTML = '<tr><th>Evento</th><th class="r">Inversión</th><th class="r">Compras pixel</th><th class="r">Valor pixel</th><th class="r">Boletas GA4 pauta</th><th class="r">Ingresos GA4 pauta</th><th class="r">Boletas por compra</th><th class="r">Diferencia de valor</th></tr>';
-  const dif = (a, b) => { if (!a && !b) return '<span class="t-mute">—</span>'; if (!a) return '<span class="t-neg">sin pixel</span>'; const d = (b - a) / a; return `<span class="${Math.abs(d) <= .3 ? 't-pos' : Math.abs(d) <= .6 ? 't-mid' : 't-neg'}">${d > 0 ? '+' : ''}${pct(d, 1)}</span>` };
-  const t = suma(rs.filter(r => lista.some(x => x.ev === r.ev)));
-  document.getElementById('px-body').innerHTML = (lista.map(x => `<tr><td>${esc(x.ev)}</td><td class="r">${money(x.a.inv)}</td><td class="r">${fmt(x.a.cm)}</td><td class="r">${short(x.a.vm)}</td><td class="r">${fmt(x.a.bolP)}</td><td class="r">${short(x.a.copP)}</td><td class="r">${x.a.cm ? (x.a.bolP / x.a.cm).toLocaleString('es-CO', { maximumFractionDigits: 1 }) : '—'}</td><td class="r">${dif(x.a.vm, x.a.copP)}</td></tr>`).join('')
-    || '<tr><td colspan="8" class="t-mute">Sin inversión en eventos de Entradas de Teatro en el rango.</td></tr>')
-    + (lista.length ? `<tr class="tr-total"><td>Total</td><td class="r">${money(t.inv)}</td><td class="r">${fmt(t.cm)}</td><td class="r">${short(t.vm)}</td><td class="r">${fmt(t.bolP)}</td><td class="r">${short(t.copP)}</td><td class="r">${t.cm ? (t.bolP / t.cm).toLocaleString('es-CO', { maximumFractionDigits: 1 }) : '—'}</td><td class="r">${dif(t.vm, t.copP)}</td></tr>` : '');
+// ---------- 6. Anuncios ----------
+// las tarjetas (con su iframe) solo se rehacen si cambia la lista de anuncios; si solo cambia el rango, se actualizan los números
+let ADS_SIG = '';
+function renderAds(f) {
+  const wrap = document.getElementById('ads-wrap'), note = document.getElementById('ads-note');
+  if (!ADS_OK) { ADS_SIG = ''; note.textContent = ''; wrap.innerHTML = '<div class="card ad-empty t-mute">Faltan las pestañas ANUNCIOS y PREVIEWS: hay que correr el script actualizado de RESUMEN GENERAL.</div>'; return }
+  const todos = document.getElementById('ads-todos').checked;
+  const desdeAct = addDays(ADS.reduce((m, r) => r.d > m ? r.d : m, ''), -2);
+  const key = r => r.camp + '|' + r.ad;
+  const activos = new Set(ADS.filter(r => r.d >= desdeAct && r.inv > 0 && pasaEvento(r.ev, f)).map(key));
+  const enRango = ADS.filter(r => r.d >= f.desde && r.d <= f.hasta && pasaEvento(r.ev, f));
+  const por = {};
+  enRango.forEach(r => { const k = key(r), x = por[k] = por[k] || { k, ev: r.ev, camp: r.camp, ad: r.ad, inv: 0, cm: 0, vm: 0 }; x.inv += r.inv; x.cm += r.cm; x.vm += r.vm });
+  activos.forEach(k => { if (!por[k]) { const r = ADS.find(x => key(x) === k); por[k] = { k, ev: r.ev, camp: r.camp, ad: r.ad, inv: 0, cm: 0, vm: 0 } } });
+  const lista = Object.values(por).filter(x => activos.has(x.k) || (todos && x.inv > 0));
+  const evs = {}; lista.forEach(x => (evs[x.ev] = evs[x.ev] || []).push(x));
+  const orden = Object.keys(evs).map(ev => ({ ev, xs: evs[ev].sort((a, b) => b.inv - a.inv || a.ad.localeCompare(b.ad)), inv: evs[ev].reduce((s, x) => s + x.inv, 0) }))
+    .sort((a, b) => b.inv - a.inv);
+  note.textContent = lista.length ? `${activos.size} activos · resultados ${fdate(f.desde)} – ${fdate(f.hasta)}` : '';
+  const sig = orden.map(o => o.ev + ':' + o.xs.map(x => x.k).join(',')).join('/');
+  if (!lista.length) { ADS_SIG = ''; wrap.innerHTML = `<div class="card ad-empty t-mute">No hay anuncios ${todos ? 'con inversión' : 'activos'} con estos filtros.</div>`; return }
+  if (sig !== ADS_SIG) {
+    ADS_SIG = sig;
+    wrap.innerHTML = orden.map(o => `<div class="card ad-ev"><div class="ad-ev-head"><div class="ev-name">${esc(o.ev)}</div><span class="kpi-sub" data-ev="${esc(o.ev)}"></span></div>
+      <div class="ad-strip">${o.xs.map(x => { const u = PREV[x.k]; return `<div class="ad-card" data-k="${esc(x.k)}">
+        <div class="ad-prev">${u ? `<iframe src="${esc(u)}" loading="lazy" scrolling="no" title="${esc(x.ad)}"></iframe>` : '<span class="t-mute">Meta no entregó vista previa para este anuncio.</span>'}</div>
+        <div class="ad-body"><div class="ad-name"><span>${esc(x.ad)}</span>${u ? `<a href="${esc(u)}" target="_blank" rel="noopener">Abrir ↗</a>` : ''}</div>
+          <div data-tag></div><div class="ad-share"><div></div></div><div class="ad-nums"></div></div></div>` }).join('')}</div></div>`).join('');
+  }
+  const cel = (l, v) => `<div><div class="nm-label">${l}</div><div class="nm-value">${v}</div></div>`;
+  orden.forEach(o => {
+    const h = [...wrap.querySelectorAll('[data-ev]')].find(e => e.dataset.ev === o.ev);
+    if (h) h.textContent = `${o.xs.length} ${o.xs.length === 1 ? 'anuncio' : 'anuncios'} · ${money(o.inv)} en el rango`;
+    o.xs.forEach(x => {
+      const c = [...wrap.querySelectorAll('.ad-card')].find(e => e.dataset.k === x.k); if (!c) return;
+      c.querySelector('[data-tag]').innerHTML = `<span class="tag ${activos.has(x.k) ? 'tag-act' : 'tag-pau'}">${activos.has(x.k) ? 'Activo' : 'Ya no corre'}</span> <span class="kpi-sub">${o.inv ? pct(x.inv, o.inv) + ' de la inversión del evento' : 'sin inversión en el rango'}</span>`;
+      c.querySelector('.ad-share div').style.width = (o.inv ? x.inv / o.inv * 100 : 0) + '%';
+      c.querySelector('.ad-nums').innerHTML = cel('Inversión', short(x.inv)) + cel('Compras', fmt(x.cm)) + cel('Costo/compra', x.cm ? short(x.inv / x.cm) : '—')
+        + cel('Valor', short(x.vm)) + cel('ROAS', x.vm ? roas(x.vm, x.inv) : '—');
+    });
+  });
 }
 
 // ---------- navegación ----------
