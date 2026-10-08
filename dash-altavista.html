@@ -76,6 +76,10 @@ select:focus,input:focus{border-color:var(--accent)}
 .kpi-value{font-size:20px;font-weight:700;line-height:1.15;font-variant-numeric:tabular-nums}
 .kpi-sub{font-size:12px;color:var(--gray-400);margin-top:3px}
 .kpi-card.hl{border-top:3px solid var(--accent)}
+.kpi-grid.k3{grid-template-columns:repeat(3,1fr)}
+.kpi-group{font-size:12px;font-weight:700;margin:0 0 6px;color:var(--fg-secondary)}
+.kpi-group span{font-weight:400;color:var(--gray-400);margin-left:4px}
+.kpi-grid#kpi-pauta{margin-bottom:12px}
 .bg-pos{background:var(--c-pos)} .bg-mid{background:var(--c-mid)} .bg-neg{background:var(--c-neg)}
 .t-pos{color:var(--c-pos);font-weight:600} .t-mid{color:var(--c-mid);font-weight:600} .t-neg{color:var(--c-neg);font-weight:600} .t-mute{color:var(--gray-400)}
 
@@ -169,6 +173,21 @@ select:focus,input:focus{border-color:var(--accent)}
 .hidden{display:none}
 .tog{display:inline-block;transition:transform .18s;margin-right:6px;color:var(--accent-fg);font-size:11px;width:9px}
 .tog.open{transform:rotate(90deg)}
+.tscroll thead tr.th-grp th{padding:6px 10px 0;font-size:11px;color:var(--gray-400);border-bottom:0}
+.tscroll thead tr.th-grp th.g{text-align:center;color:var(--fg-secondary);border-bottom:2px solid var(--accent)}
+.tscroll td.ini,.tscroll th.ini{border-left:1px solid var(--gray-200)}
+.ev-sub2{display:block;font-size:11px;font-weight:400;color:var(--gray-400);margin-top:1px}
+tr.det>td{padding:0 !important;background:#fafafa !important}
+.ev-det{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 14px 16px 30px}
+.ev-det .card{overflow:hidden}
+.ev-det h4{font-size:12px;font-weight:700;padding:9px 12px;border-bottom:1px solid var(--gray-100)}
+.ev-det h4 span{font-weight:400;color:var(--gray-400)}
+.ev-det table thead tr{background:var(--white)}
+.ev-det table thead th{background:var(--white);position:static}
+.ev-det .fn td{font-weight:600;color:var(--black)}
+.ev-det .pr td:first-child{padding-left:22px}
+.ev-det .vacio{padding:12px;font-size:12px;color:var(--gray-400)}
+@media(max-width:1100px){.ev-det{grid-template-columns:1fr;padding-left:14px}}
 .foot-note{font-size:11px;color:var(--gray-400);padding:8px 12px;border-top:1px solid var(--gray-100);line-height:1.5}
 .mini-bar{display:inline-block;height:6px;background:var(--accent);border-radius:999px;vertical-align:middle;margin-left:6px}
 
@@ -180,7 +199,7 @@ select:focus,input:focus{border-color:var(--accent)}
 #ld-msg{color:#8a8a86;font-size:12px}
 
 @media(max-width:1450px){.tscroll thead th,.tscroll tbody td{font-size:11px;padding:6px 8px}}
-@media(max-width:1300px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.three-col,.two-col{grid-template-columns:1fr}}
+@media(max-width:1300px){.kpi-grid,.kpi-grid.k3{grid-template-columns:repeat(2,1fr)}.three-col,.two-col{grid-template-columns:1fr}}
 @media(max-width:900px){
   body{flex-direction:column}
   .app-sidebar{position:sticky;top:0;z-index:60;width:100%;height:auto;flex-direction:row;align-items:center;overflow-x:auto}
@@ -209,10 +228,8 @@ select:focus,input:focus{border-color:var(--accent)}
   <div class="app-sidebar-nav">
     <span class="app-sidebar-nav-title">Secciones</span>
     <a href="#sec-kpi" class="active"><b></b>Resumen</a>
-    <a href="#sec-cartelera"><b></b>Cartelera en pauta</a>
-    <a href="#sec-evento"><b></b>Por evento</a>
+    <a href="#sec-evento"><b></b>Cartelera en pauta</a>
     <a href="#sec-canal"><b></b>Por canal</a>
-    <a href="#sec-mix"><b></b>Mezcla por evento</a>
     <a href="#sec-evo"><b></b>Evolución</a>
     <a href="#sec-ads"><b></b>Anuncios</a>
   </div>
@@ -245,12 +262,12 @@ select:focus,input:focus{border-color:var(--accent)}
 
   <div class="content">
     <div class="sec-title" id="sec-kpi"><span></span>Resumen del rango<span class="sec-note" id="rango-note"></span></div>
-    <div class="kpi-grid" id="kpi-grid"></div>
+    <div class="kpi-group">Pauta <span>Meta + GA4</span></div>
+    <div class="kpi-grid" id="kpi-pauta"></div>
+    <div class="kpi-group">Venta real <span>tiquetera Entradas de Teatro</span></div>
+    <div class="kpi-grid k3" id="kpi-venta"></div>
 
-    <div class="sec-title" id="sec-cartelera"><span></span>Cartelera en pauta<span class="sec-note">eventos activos en PRESUPUESTO · cada tarjeta se mide desde el inicio de su pauta hasta hoy, sin importar el rango de fechas</span></div>
-    <div class="cart-grid" id="cartelera"></div>
-
-    <div class="sec-title" id="sec-evento"><span></span>Por evento<span class="sec-note">clic en un evento para ver sus canales</span></div>
+    <div class="sec-title" id="sec-evento"><span></span>Cartelera en pauta<span class="sec-note">clic en un evento para ver sus medios (GA4) y sus funciones y localidades (tiquetera)</span></div>
     <div class="card tcard">
       <div class="tbar">
         <button class="tbtn" onclick="expandAll(true)">Expandir todo</button>
@@ -260,9 +277,10 @@ select:focus,input:focus{border-color:var(--accent)}
       </div>
       <div class="tscroll"><table><thead id="ev-head"></thead><tbody id="ev-body"></tbody></table></div>
       <div class="foot-note">
-        <b>Boletas e ingresos</b>: GA4 de entradasdeteatro.co (Items purchased e Item revenue × TRM del día). <b>Boletas por pauta</b>: las que GA4 atribuye al canal META PAUTA.
-        <b>Costo por boleta</b> = inversión ÷ boletas por pauta. <b>ROAS</b> = ingresos por pauta ÷ inversión. Ambos solo aplican a eventos que venden en Entradas de Teatro;
-        los de otras tiqueteras muestran las compras del pixel de Meta como referencia, porque GA4 no ve esas ventas.
+        <b>Tiquetera</b>: ventas reales de Entradas de Teatro (API), netas de devoluciones y cancelaciones; los ingresos incluyen el servicio, que es lo que paga el comprador. La tiquetera no dice por qué medio llegó la venta.
+        <b>Pauta</b>: boletas e ingresos que GA4 atribuye al canal META PAUTA (Item revenue × TRM del día). <b>% de la venta</b> = boletas por pauta ÷ boletas de la tiquetera.
+        <b>Costo por boleta</b> = inversión ÷ boletas por pauta. <b>ROAS</b> = ingresos por pauta ÷ inversión.
+        Los eventos de otras tiqueteras muestran las compras del pixel de Meta como referencia (marcadas <i>px</i>), porque ni GA4 ni la API ven esas ventas.
       </div>
     </div>
 
@@ -273,13 +291,10 @@ select:focus,input:focus{border-color:var(--accent)}
       <div class="card tcard" style="margin-bottom:0"><div class="tscroll"><table><thead id="canal-head"></thead><tbody id="canal-body"></tbody></table></div></div>
     </div>
 
-    <div class="sec-title" id="sec-mix"><span></span>Mezcla de canales por evento<span class="sec-note">% de las boletas de cada evento según el canal · eventos con más ventas en el rango</span></div>
-    <div class="card chart-card"><div class="chart-wrap" id="mix-wrap"><canvas id="chart-mix"></canvas></div></div>
-
     <div class="sec-title" id="sec-evo"><span></span>Evolución<span class="sec-note" id="evo-note"></span>
       <span style="margin-left:auto;display:flex;gap:6px">
-        <button class="qbtn" data-ev="dia" onclick="setEvo('dia')">Día</button>
-        <button class="qbtn on" data-ev="sem" onclick="setEvo('sem')">Semana</button>
+        <button class="qbtn on" data-ev="dia" onclick="setEvo('dia')">Día</button>
+        <button class="qbtn" data-ev="sem" onclick="setEvo('sem')">Semana</button>
         <button class="qbtn" data-ev="mes" onclick="setEvo('mes')">Mes</button>
       </span>
     </div>
@@ -310,7 +325,7 @@ const GRUPOS = {
 };
 const PRESUPUESTO_MAX = 200e6; // por encima de esto el presupuesto se marca como "revisar en la hoja"
 
-let RAW = [], PRES = {}, EVENTOS = {}, CHARTS = {}, EVO = 'sem', SORT = { k: 'inv', dir: -1 }, OPEN = new Set();
+let RAW = [], API = [], API_EVS = new Set(), API_OK = false, FUNCIONES = {}, PRES = {}, EVENTOS = {}, CHARTS = {}, EVO = 'dia', SORT = { k: 'inv', dir: -1 }, OPEN = new Set();
 
 // ---------- utilidades ----------
 const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
@@ -327,7 +342,8 @@ const pct = (a, b) => b ? (a / b * 100).toLocaleString('es-CO', { maximumFractio
 const roas = (a, b) => b ? (a / b).toLocaleString('es-CO', { maximumFractionDigits: 1 }) + 'x' : '—';
 const fdate = d => d ? new Date(d + 'T12:00:00Z').toLocaleDateString('es-CO', { day: 'numeric', month: 'short', timeZone: 'UTC' }) : '—';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const vendeEnEdt = ev => (EVENTOS[ev]?.tiq || '').includes(EDT);
+const vendeEnEdt = ev => API_EVS.has(ev) || (EVENTOS[ev]?.tiq || '').includes(EDT);
+const nx = v => Number(String(v ?? '').replace(/[^\d.-]/g, '')) || 0; // números de ET_VENTAS (punto decimal)
 const grupoDe = canal => Object.keys(GRUPOS).find(g => GRUPOS[g] && GRUPOS[g].includes(canal)) || 'Otras fuentes';
 
 // ---------- carga ----------
@@ -337,19 +353,19 @@ function fetchTab(sheet) {
 function load() {
   document.getElementById('loading').style.display = 'flex';
   document.getElementById('ld-msg').textContent = 'Cargando datos...';
-  Promise.all([fetchTab('RESUMEN GENERAL'), fetchTab('PRESUPUESTO'), fetchTab('ANUNCIOS').catch(() => []), fetchTab('PREVIEWS').catch(() => [])]).then(([rg, pres, ads, prev]) => {
-    build(rg.slice(1), pres.slice(1));
+  Promise.all([fetchTab('RESUMEN GENERAL'), fetchTab('PRESUPUESTO'), fetchTab('ANUNCIOS').catch(() => []), fetchTab('PREVIEWS').catch(() => []), fetchTab('ET_VENTAS').catch(() => [])]).then(([rg, pres, ads, prev, et]) => {
+    build(rg.slice(1), pres.slice(1), et);
     buildAds(ads, prev);
     prepare();
     const t = new Date().toLocaleString('es-CO', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
-    document.getElementById('last-upd').textContent = 'Datos hasta ' + fdate(MAXD) + ' · cargados ' + t;
+    document.getElementById('last-upd').textContent = 'Meta y GA4 hasta ' + fdate(MAXD) + (API_OK ? ' · tiquetera hasta ' + fdate(API_MAXD) : '') + ' · cargados ' + t;
     document.getElementById('last-upd-side').textContent = t;
     document.getElementById('loading').style.display = 'none';
   }).catch(e => { console.error(e); document.getElementById('ld-msg').textContent = 'No se pudo leer la hoja de Altavista' });
 }
 
-let MIND = '', MAXD = '';
-function build(rg, pres) {
+let MIND = '', MAXD = '', API_MAXD = '';
+function build(rg, pres, et) {
   // RESUMEN GENERAL: Fecha | Mes | Evento | Tiquetera | Canal | Inversión | Compras Meta | Valor Meta | Boletas GA4 | Ingresos USD | TRM | Ingresos COP
   RAW = []; EVENTOS = {}; PRES = {};
   rg.forEach(x => {
@@ -359,6 +375,23 @@ function build(rg, pres) {
     const e = EVENTOS[ev] = EVENTOS[ev] || { tiq: '' };
     const t = String(x[3] || '').trim(); if (t && !e.tiq) e.tiq = t;
   });
+  // ET_VENTAS: Fecha | Mes | Evento | ID evento | Evento tiquetera | Fecha función | Producto | Boletas | Venta boletas | Servicio | Venta total | Compras
+  // (si la pestaña no existe, gviz devuelve otra hoja: se valida el encabezado)
+  API = []; API_EVS = new Set(); FUNCIONES = {};
+  API_OK = norm(et[0]?.[10]) === 'VENTA TOTAL';
+  if (API_OK) {
+    const pn = {}; Object.keys(EVENTOS).forEach(ev => pn[norm(ev)] = ev);
+    et.slice(1).forEach(x => {
+      const d = iso(x[0]); if (!d) return;
+      const nombre = String(x[2] || '').trim() || 'SIN HOMOLOGAR', ev = pn[norm(nombre)] || nombre; pn[norm(nombre)] = ev;
+      const fn = String(x[5] || '').trim();
+      API.push({ d, ev, fn, prod: String(x[6] || '').trim() || 'Sin localidad', bol: nx(x[7]), tot: nx(x[10]) });
+      if (ev === 'SIN HOMOLOGAR' || ev === 'SIN DATO') return;
+      API_EVS.add(ev); EVENTOS[ev] = EVENTOS[ev] || { tiq: EDT };
+      if (iso(fn)) (FUNCIONES[ev] = FUNCIONES[ev] || new Set()).add(fn);
+    });
+    API_MAXD = API.reduce((m, r) => r.d > m ? r.d : m, '');
+  }
   // PRESUPUESTO: EVENTO | FECHA INICIO | FECHA FINAL | PRESUPUESTO | ESTADO (filas repetidas del mismo evento se suman)
   const porNorm = {}; Object.keys(EVENTOS).forEach(ev => porNorm[norm(ev)] = ev);
   pres.forEach(x => {
@@ -429,7 +462,7 @@ function onFiltroEvento() {
 }
 function onEvento() {
   const inp = document.getElementById('f-evento'), ev = resolverEvento(inp.value), p = PRES[ev];
-  if (ev) inp.value = ev;
+  if (ev) { inp.value = ev; OPEN.add('ev' + norm(ev)) }
   if (!ev) { document.querySelectorAll('#quick button')[1].click(); return }
   if (p && p.ini) { document.querySelectorAll('#quick button').forEach(o => o.classList.remove('on')); setRange(p.ini, p.fin || today()); return }
   render();
@@ -453,6 +486,10 @@ function pasaEvento(ev, f) {
 function rows(f, conFechas = true, conCanal = true) {
   return RAW.filter(r => (!conFechas || (r.d >= f.desde && r.d <= f.hasta)) && pasaEvento(r.ev, f) && (!conCanal || !f.canal || r.canal === f.canal));
 }
+function apiRows(f) {
+  return API.filter(r => r.d >= f.desde && r.d <= f.hasta && pasaEvento(r.ev, f));
+}
+function sumApi(rs) { const t = { bol: 0, tot: 0 }; rs.forEach(r => { t.bol += r.bol; t.tot += r.tot }); return t }
 const vacio = () => ({ inv: 0, cm: 0, vm: 0, bol: 0, cop: 0, bolP: 0, copP: 0, invEdt: 0, bolPEdt: 0, copPEdt: 0 });
 function suma(rs) {
   const a = vacio();
@@ -468,120 +505,123 @@ function render() {
   const f = filtros();
   const p = PRES[f.evento], ventana = p && p.ini === f.desde && (p.fin || today()) === f.hasta;
   document.getElementById('rango-note').textContent = fdate(f.desde) + ' – ' + fdate(f.hasta) + ' · ' + (daysBetween(f.desde, f.hasta) + 1) + ' días'
-    + (ventana ? ' · ventana de pauta de ' + f.evento + ' (PRESUPUESTO)' : '') + (f.hasta > today() ? ' · datos hasta hoy' : '');
-  renderKpis(f); renderCartelera(f); renderEventos(f); renderCanales(f); renderEvo(f); renderAds(f);
+    + (ventana ? ' · ventana de pauta de ' + f.evento + ' (PRESUPUESTO)' : '') + (f.hasta > today() ? ' · datos hasta hoy' : '')
+    + (f.canal ? ' · la tiquetera no se filtra por canal' : '');
+  renderKpis(f); renderEventos(f); renderCanales(f); renderEvo(f); renderAds(f);
 }
 
 // ---------- 1. KPIs ----------
 function renderKpis(f) {
-  const a = suma(rows(f));
+  const a = suma(rows(f)), t = sumApi(apiRows(f));
   const cpb = a.bolPEdt ? a.invEdt / a.bolPEdt : 0;
-  const K = [
+  const card = k => `<div class="card kpi-card${k[3] ? ' hl' : ''}"><div class="kpi-label">${k[0]}</div><div class="kpi-value">${k[1]}</div><div class="kpi-sub">${k[2]}</div></div>`;
+  document.getElementById('kpi-pauta').innerHTML = [
     ['Inversión Meta', money(a.inv), a.inv - a.invEdt > 0 ? short(a.inv - a.invEdt) + ' en eventos de otras tiqueteras' : 'todo en eventos de Entradas de Teatro', true],
-    ['Boletas vendidas', fmt(a.bol), 'GA4 · todos los canales', true],
-    ['Boletas por pauta', fmt(a.bolP), pct(a.bolP, a.bol) + ' de las boletas vendidas', true],
-    ['Costo por boleta', cpb ? money(cpb) : '—', 'inversión en Entradas de Teatro ÷ boletas por pauta', true],
-    ['Ingresos', short(a.cop), 'GA4 · todos los canales, en COP'],
-    ['Ingresos por pauta', short(a.copP), pct(a.copP, a.cop) + ' de los ingresos'],
-    ['ROAS pauta', roas(a.copPEdt, a.invEdt), 'ingresos por pauta ÷ inversión'],
-    ['Ticket promedio', a.bol ? money(a.cop / a.bol) : '—', 'ingresos ÷ boletas'],
-  ];
-  document.getElementById('kpi-grid').innerHTML = K.map(k => `<div class="card kpi-card${k[3] ? ' hl' : ''}"><div class="kpi-label">${k[0]}</div><div class="kpi-value">${k[1]}</div><div class="kpi-sub">${k[2]}</div></div>`).join('');
+    ['Boletas por pauta', fmt(a.bolP), a.bolP ? 'GA4 · ticket medio ' + money(a.copP / a.bolP) : 'GA4 · canal META PAUTA', true],
+    ['Costo por boleta de pauta', cpb ? money(cpb) : '—', 'inversión ÷ boletas por pauta', true],
+    ['ROAS pauta', roas(a.copPEdt, a.invEdt), 'ingresos por pauta ÷ inversión', true],
+  ].map(card).join('');
+  document.getElementById('kpi-venta').innerHTML = [
+    ['Boletas vendidas', API_OK ? fmt(t.bol) : '—', !API_OK ? 'falta la pestaña ET_VENTAS' : t.bol ? 'tiquetera · ticket medio ' + money(t.tot / t.bol) : 'sin ventas en el rango'],
+    ['Ingresos tiquetera', API_OK ? short(t.tot) : '—', 'venta total con servicio'],
+    ['Ingresos por pauta', short(a.copP), t.tot ? 'GA4 · ' + pct(a.copP, t.tot) + ' de los ingresos de la tiquetera' : 'GA4 · canal META PAUTA'],
+  ].map(card).join('');
 }
 
-// ---------- 2. Cartelera ----------
-function renderCartelera(f) {
-  const hoy = today();
-  const evs = Object.keys(PRES).filter(ev => PRES[ev].estado === 'ACTIVA' && (!f.evento || ev === f.evento) && (!f.tiq || (EVENTOS[ev]?.tiq || '').includes(f.tiq)))
-    .sort((a, b) => (PRES[a].fin || '9') .localeCompare(PRES[b].fin || '9'));
-  if (!evs.length) { document.getElementById('cartelera').innerHTML = '<div class="card ev-card"><span class="t-mute">No hay eventos activos con estos filtros.</span></div>'; return }
-  document.getElementById('cartelera').innerHTML = evs.map(ev => {
-    const p = PRES[ev], edt = vendeEnEdt(ev);
-    const a = suma(RAW.filter(r => r.ev === ev && r.d >= (p.ini || MIND) && r.d <= hoy));
-    const diasFn = p.fin ? daysBetween(hoy, p.fin) : null;
-    const presOk = p.pres > 0 && p.pres < PRESUPUESTO_MAX;
-    const cuenta = diasFn === null ? '<b>—</b><small>sin fecha de función</small>'
-      : diasFn > 0 ? `<b>${diasFn}</b><small>días para la función<br>${fdate(p.fin)}</small>`
-      : diasFn === 0 ? '<b>Hoy</b><small>es la función</small>' : `<b>✓</b><small>función ${fdate(p.fin)}</small>`;
-    let dinero, barra = '';
-    if (!presOk) {
-      dinero = `<div class="inv"><span>Invertido</span><b>${short(a.inv)}</b></div><div><span>Presupuesto</span><b>—</b></div><div><span>Disponible</span><b>—</b></div>`;
-    } else {
-      const disp = Math.max(p.pres - a.inv, 0), ejec = a.inv / p.pres;
-      dinero = `<div class="inv"><span>Invertido</span><b>${short(a.inv)}</b></div><div><span>Presupuesto</span><b>${short(p.pres)}</b></div><div><span>Disponible</span><b>${short(disp)}</b></div>`;
-      if (p.ini && p.fin) {
-        const total = daysBetween(p.ini, p.fin) + 1, trans = Math.min(Math.max(daysBetween(p.ini, hoy) + 1, 0), total);
-        const esp = trans / total;
-        barra = `<div class="ev-bar"><div class="ev-bfill" style="width:${Math.min(ejec * 100, 100)}%"></div><div class="ev-mark" style="left:calc(${Math.min(esp * 100, 100)}% - 1px)"></div></div>
-          <div class="ev-barlbl"><span><b>${pct(ejec, 1)}</b> invertido</span><span>▲ a hoy deberían ir ${short(p.pres * esp)} (${pct(esp, 1)})</span></div>`;
-      }
-    }
-    const stats = edt ? [
-      ['Boletas', fmt(a.bol)], ['Por pauta', fmt(a.bolP)], ['Costo por boleta', a.bolP ? short(a.inv / a.bolP) : '—'], ['ROAS', a.copP ? roas(a.copP, a.inv) : '—'],
-    ] : [
-      ['Compras pixel', fmt(a.cm)], ['Valor pixel', short(a.vm)], ['Costo por compra', a.cm ? short(a.inv / a.cm) : '—'], ['ROAS pixel', a.vm ? roas(a.vm, a.inv) : '—'],
-    ];
-    return `<div class="card ev-card${edt ? '' : ' otra'}">
-      <div class="ev-head">
-        <div><div class="ev-name">${esc(ev)}</div>
-          <div class="ev-sub"><span class="tag ${edt ? 'tag-edt' : 'tag-otra'}">${esc(EVENTOS[ev]?.tiq || 'Sin tiquetera')}</span> &nbsp;pauta desde ${fdate(p.ini)}</div></div>
-        <div class="ev-count">${cuenta}</div>
-      </div>
-      <div class="ev-money">${dinero}</div>
-      ${barra}
-      <div class="ev-stats">${stats.map(x => `<div><div class="nm-label">${x[0]}</div><div class="nm-value">${x[1]}</div></div>`).join('')}</div>
-      ${edt ? '' : '<div class="kpi-sub" style="margin-top:-6px">Vende fuera de Entradas de Teatro: resultados del pixel de Meta.</div>'}
-    </div>`;
-  }).join('');
-}
-
-// ---------- 3. Por evento ----------
+// ---------- 3. Cartelera en pauta (tabla por evento) ----------
 const EV_COLS = [
-  ['ev', 'Evento', 0], ['estado', 'Estado', 0], ['pres', 'Presupuesto', 1], ['inv', 'Inversión', 1], ['ejec', '% ejec.', 1],
-  ['bol', 'Boletas', 1], ['bolP', 'Por pauta', 1], ['pctP', '% pauta', 1], ['cop', 'Ingresos', 1], ['ticket', 'Ticket prom.', 1], ['cpb', 'Costo/boleta', 1], ['roas', 'ROAS', 1],
+  ['ev', 'Evento', 0, ''], ['fnd', 'Función', 0, ''],
+  ['pres', 'Presupuesto', 1, 'ini'], ['inv', 'Inversión', 1, ''], ['ejec', '% ejec.', 1, ''],
+  ['tb', 'Boletas', 1, 'ini'], ['ti', 'Ingresos', 1, ''],
+  ['bolP', 'Boletas', 1, 'ini'], ['pctP', '% de la venta', 1, ''], ['cpb', 'Costo/boleta', 1, ''], ['roas', 'ROAS', 1, ''],
 ];
 function sortBy(k) { SORT = { k, dir: SORT.k === k ? -SORT.dir : -1 }; renderEventos(filtros()) }
 function expandAll(on) { OPEN = new Set(on ? [...document.querySelectorAll('#ev-body .lv1')].map(t => t.dataset.k) : []); renderEventos(filtros()) }
+// "2026-09-05 20:00" -> "5 sep · 8:00 p. m."
+function fnTxt(fn) {
+  const m = String(fn).match(/(\d{1,2}):(\d{2})/), d = fdate(iso(fn));
+  if (!m || (+m[1] === 0 && +m[2] === 0)) return d;
+  const h = +m[1]; return d + ' · ' + (h % 12 || 12) + ':' + m[2] + (h < 12 ? ' a. m.' : ' p. m.');
+}
+// próxima función del evento (la tiquetera manda; si no hay, la fecha final de PRESUPUESTO)
+function funcionDe(ev) {
+  const hoy = today(), fs = [...(FUNCIONES[ev] || [])].sort((a, b) => iso(a).localeCompare(iso(b)) || a.localeCompare(b));
+  const fut = fs.filter(x => iso(x) >= hoy);
+  if (fut.length) { const n = daysBetween(hoy, iso(fut[0])); return { k: iso(fut[0]), txt: fnTxt(fut[0]), sub: (n ? 'en ' + n + (n === 1 ? ' día' : ' días') : 'hoy') + (fut.length > 1 ? ' · ' + fut.length + ' funciones' : '') } }
+  if (fs.length) return { k: '9' + iso(fs[fs.length - 1]), txt: fnTxt(fs[fs.length - 1]), sub: 'ya pasó' };
+  const fin = PRES[ev]?.fin;
+  return fin ? { k: (fin >= hoy ? '' : '9') + fin, txt: fdate(fin), sub: 'fecha de PRESUPUESTO' } : { k: '99', txt: '—', sub: '' };
+}
 function renderEventos(f) {
-  const rs = rows(f);
+  const rs = rows(f), ars = apiRows(f);
   const por = {};
-  rs.forEach(r => (por[r.ev] = por[r.ev] || []).push(r));
-  const lista = Object.entries(por).map(([ev, xs]) => {
-    const a = suma(xs), edt = vendeEnEdt(ev), p = PRES[ev];
-    const presOk = p && p.pres > 0 && p.pres < PRESUPUESTO_MAX;
-    return { ev, xs, a, edt, tiq: EVENTOS[ev]?.tiq || '', estado: EVENTOS[ev]?.estado || 'SIN PAUTA', pres: presOk ? p.pres : 0, inv: a.inv,
-      ejec: presOk ? a.inv / p.pres : -1, bol: a.bol, bolP: a.bolP, pctP: a.bol ? a.bolP / a.bol : -1, cop: a.cop, ticket: a.bol ? a.cop / a.bol : -1,
+  const de = ev => por[ev] = por[ev] || { xs: [], ys: [] };
+  rs.forEach(r => de(r.ev).xs.push(r));
+  ars.forEach(r => de(r.ev).ys.push(r));
+  const lista = Object.entries(por).map(([ev, g]) => {
+    const a = suma(g.xs), t = sumApi(g.ys), edt = vendeEnEdt(ev), p = PRES[ev];
+    const presOk = p && p.pres > 0 && p.pres < PRESUPUESTO_MAX, fn = funcionDe(ev);
+    return { ev, xs: g.xs, ys: g.ys, a, t, edt, fn, tiq: EVENTOS[ev]?.tiq || '', estado: EVENTOS[ev]?.estado || 'SIN PAUTA',
+      pres: presOk ? p.pres : 0, inv: a.inv, ejec: presOk ? a.inv / p.pres : -1, fnd: fn.k, tb: t.bol, ti: t.tot,
+      bolP: edt ? a.bolP : -1, pctP: edt && t.bol ? a.bolP / t.bol : -1,
       cpb: edt && a.bolP ? a.inv / a.bolP : (edt ? -1 : -2), roas: edt && a.inv ? a.copP / a.inv : -1 };
-  }).filter(x => x.inv || x.bol || x.cm);
+  }).filter(x => x.inv || x.a.bol || x.a.cm || x.t.bol || x.t.tot);
   const k = SORT.k;
   lista.sort((a, b) => (typeof a[k] === 'string' ? a[k].localeCompare(b[k]) : a[k] - b[k]) * SORT.dir);
-  document.getElementById('ev-head').innerHTML = '<tr>' + EV_COLS.map(c => `<th class="sortable${c[2] ? ' r' : ''}${k === c[0] ? ' sort-act' : ''}" onclick="sortBy('${c[0]}')">${c[1]}${k === c[0] ? (SORT.dir < 0 ? ' ↓' : ' ↑') : ''}</th>`).join('') + '</tr>';
+
+  document.getElementById('ev-head').innerHTML =
+    '<tr class="th-grp"><th colspan="2"></th><th colspan="3" class="g ini">Meta</th><th colspan="2" class="g ini">Tiquetera</th><th colspan="4" class="g ini">Pauta · GA4</th></tr><tr>'
+    + EV_COLS.map(c => `<th class="sortable${c[2] ? ' r' : ''}${c[3] ? ' ' + c[3] : ''}${k === c[0] ? ' sort-act' : ''}" onclick="sortBy('${c[0]}')">${c[1]}${k === c[0] ? (SORT.dir < 0 ? ' ↓' : ' ↑') : ''}</th>`).join('') + '</tr>';
   const tagEst = e => `<span class="tag ${e === 'ACTIVA' ? 'tag-act' : e === 'ARCHIVADA' ? 'tag-arc' : 'tag-pau'}">${e.charAt(0) + e.slice(1).toLowerCase()}</span>`;
-  const celdas = (x, nombre, lvl) => {
-    const a = x.a;
-    const tiqTag = lvl === 1 && !x.edt && x.tiq ? ` <span class="tag tag-otra">${esc(x.tiq)}</span>` : '';
-    return `<td>${nombre}${tiqTag}</td><td>${lvl === 1 ? tagEst(x.estado) : ''}</td>
-      <td class="r">${lvl === 1 && x.pres ? short(x.pres) : ''}</td><td class="r">${a.inv ? money(a.inv) : '—'}</td>
-      <td class="r">${lvl === 1 && x.pres ? pct(a.inv, x.pres) : ''}</td>
-      <td class="r">${x.edt ? fmt(a.bol) : '—'}</td><td class="r">${x.edt ? fmt(a.bolP) : '—'}</td><td class="r">${x.edt && lvl === 1 ? pct(a.bolP, a.bol) : ''}</td>
-      <td class="r">${x.edt ? short(a.cop) : '—'}</td><td class="r">${x.edt && a.bol ? money(a.cop / a.bol) : '—'}</td>
-      <td class="r">${x.edt && a.inv && a.bolP ? money(a.inv / a.bolP) : !x.edt && lvl === 1 && a.cm ? '<span class="t-mute" title="costo por compra del pixel">' + money(a.inv / a.cm) + ' px</span>' : '—'}</td>
-      <td class="r">${x.edt && a.inv ? roas(a.copP, a.inv) : !x.edt && lvl === 1 && a.inv ? '<span class="t-mute" title="ROAS del pixel">' + roas(a.vm, a.inv) + ' px</span>' : '—'}</td>`;
-  };
   let html = '';
-  lista.forEach((x, i) => {
-    const key = 'ev' + norm(x.ev), open = OPEN.has(key);
-    html += `<tr class="lv1" data-k="${key}" onclick="OPEN.has('${key}')?OPEN.delete('${key}'):OPEN.add('${key}');renderEventos(filtros())">${celdas(x, `<span class="tog${open ? ' open' : ''}">▶</span>${esc(x.ev)}`, 1)}</tr>`;
-    if (open) {
-      const pc = {}; x.xs.forEach(r => (pc[r.canal] = pc[r.canal] || []).push(r));
-      Object.entries(pc).map(([c, rr]) => ({ c, a: suma(rr) })).sort((p, q) => q.a.bol - p.a.bol || q.a.inv - p.a.inv)
-        .forEach(y => { html += `<tr class="lv2">${celdas({ ...x, a: y.a }, esc(y.c), 2)}</tr>` });
-    }
+  lista.forEach(x => {
+    const a = x.a, key = 'ev' + norm(x.ev), open = OPEN.has(key), hayApi = x.ys.length > 0;
+    const px = (v, t) => `<span class="t-mute" title="${t}">${v} px</span>`;
+    html += `<tr class="lv1" data-k="${key}" onclick="OPEN.has('${key}')?OPEN.delete('${key}'):OPEN.add('${key}');renderEventos(filtros())">
+      <td><span class="tog${open ? ' open' : ''}">▶</span>${esc(x.ev)}<span class="ev-sub2">${tagEst(x.estado)}${!x.edt && x.tiq ? ' <span class="tag tag-otra">' + esc(x.tiq) + '</span>' : ''}</span></td>
+      <td>${x.fn.txt}<span class="ev-sub2">${x.fn.sub}</span></td>
+      <td class="r ini">${x.pres ? short(x.pres) : '—'}</td><td class="r">${a.inv ? money(a.inv) : '—'}</td><td class="r">${x.pres ? pct(a.inv, x.pres) : '—'}</td>
+      <td class="r ini">${hayApi ? fmt(x.t.bol) : '—'}</td><td class="r">${hayApi ? short(x.t.tot) : '—'}</td>
+      <td class="r ini">${x.edt ? fmt(a.bolP) : '—'}</td><td class="r">${x.edt && x.t.bol ? pct(a.bolP, x.t.bol) : '—'}</td>
+      <td class="r">${x.edt && a.inv && a.bolP ? money(a.inv / a.bolP) : !x.edt && a.cm ? px(money(a.inv / a.cm), 'costo por compra del pixel de Meta') : '—'}</td>
+      <td class="r">${x.edt && a.inv ? roas(a.copP, a.inv) : !x.edt && a.inv && a.vm ? px(roas(a.vm, a.inv), 'ROAS del pixel de Meta') : '—'}</td></tr>`;
+    if (open) html += `<tr class="det"><td colspan="${EV_COLS.length}">${detalleEvento(x)}</td></tr>`;
   });
-  const t = suma(rs);
-  html += `<tr class="tr-total"><td>Total</td><td></td><td class="r"></td><td class="r">${money(t.inv)}</td><td></td><td class="r">${fmt(t.bol)}</td><td class="r">${fmt(t.bolP)}</td><td class="r">${pct(t.bolP, t.bol)}</td><td class="r">${short(t.cop)}</td><td class="r">${t.bol ? money(t.cop / t.bol) : '—'}</td><td class="r">${t.bolPEdt ? money(t.invEdt / t.bolPEdt) : '—'}</td><td class="r">${roas(t.copPEdt, t.invEdt)}</td></tr>`;
+  const t = suma(rs), ta = sumApi(ars);
+  html += `<tr class="tr-total"><td>Total</td><td></td><td class="r ini"></td><td class="r">${money(t.inv)}</td><td></td>
+    <td class="r ini">${API_OK ? fmt(ta.bol) : '—'}</td><td class="r">${API_OK ? short(ta.tot) : '—'}</td>
+    <td class="r ini">${fmt(t.bolP)}</td><td class="r">${ta.bol ? pct(t.bolP, ta.bol) : '—'}</td>
+    <td class="r">${t.bolPEdt ? money(t.invEdt / t.bolPEdt) : '—'}</td><td class="r">${roas(t.copPEdt, t.invEdt)}</td></tr>`;
   document.getElementById('ev-body').innerHTML = html;
   document.getElementById('ev-note').textContent = lista.length + (lista.length === 1 ? ' evento' : ' eventos') + ' con inversión o ventas en el rango';
+}
+// detalle de un evento: medios (GA4) a la izquierda, funciones y localidades (tiquetera) a la derecha
+function detalleEvento(x) {
+  const th = cols => '<thead><tr>' + cols.map((c, i) => `<th${i ? ' class="r"' : ''}>${c}</th>`).join('') + '</tr></thead>';
+  let izq;
+  if (!x.edt) {
+    izq = `<div class="vacio">Vende en ${esc(x.tiq || 'otra tiquetera')}: GA4 no ve estas ventas. Pixel de Meta en el rango: <b>${fmt(x.a.cm)}</b> compras por <b>${short(x.a.vm)}</b>.</div>`;
+  } else {
+    const pc = {}; x.xs.forEach(r => (pc[r.canal] = pc[r.canal] || []).push(r));
+    const cs = Object.entries(pc).map(([c, rr]) => ({ c, a: suma(rr) })).filter(y => y.a.bol || y.a.inv).sort((p, q) => q.a.bol - p.a.bol || q.a.inv - p.a.inv);
+    izq = cs.length ? `<table>${th(['Medio', 'Inversión', 'Boletas', '%', 'Ingresos'])}<tbody>${cs.map(y => `<tr><td><span class="sw" style="background:${colorCanal(y.c)}"></span>${esc(y.c)}</td>
+      <td class="r">${y.a.inv ? money(y.a.inv) : ''}</td><td class="r">${fmt(y.a.bol)}</td><td class="r">${pct(y.a.bol, x.a.bol)}</td><td class="r">${short(y.a.cop)}</td></tr>`).join('')}
+      <tr class="tr-total"><td>Total GA4</td><td class="r">${money(x.a.inv)}</td><td class="r">${fmt(x.a.bol)}</td><td class="r">100%</td><td class="r">${short(x.a.cop)}</td></tr></tbody></table>`
+      : '<div class="vacio">Sin compras en GA4 en este rango.</div>';
+  }
+  let der;
+  if (!x.ys.length) {
+    der = `<div class="vacio">${x.edt ? 'Sin ventas en la tiquetera en este rango.' : 'La API de Entradas de Teatro no tiene las ventas de este evento.'}</div>`;
+  } else {
+    const fs = {}; x.ys.forEach(r => { const g = fs[r.fn] = fs[r.fn] || { t: { bol: 0, tot: 0 }, p: {} }; g.t.bol += r.bol; g.t.tot += r.tot; const q = g.p[r.prod] = g.p[r.prod] || { bol: 0, tot: 0 }; q.bol += r.bol; q.tot += r.tot });
+    const tk = t => t.bol > 0 ? money(t.tot / t.bol) : '—';
+    der = `<table>${th(['Función / localidad', 'Boletas', 'Ingresos', 'Ticket medio'])}<tbody>`
+      + Object.keys(fs).sort((a, b) => iso(a).localeCompare(iso(b)) || a.localeCompare(b)).map(fn => { const g = fs[fn];
+        return `<tr class="fn"><td>${fn ? fnTxt(fn) : 'Sin función'}</td><td class="r">${fmt(g.t.bol)}</td><td class="r">${short(g.t.tot)}</td><td class="r">${tk(g.t)}</td></tr>`
+          + Object.entries(g.p).sort((p, q) => q[1].tot - p[1].tot).map(([pr, t]) => `<tr class="pr"><td>${esc(pr)}</td><td class="r">${fmt(t.bol)}</td><td class="r">${short(t.tot)}</td><td class="r">${tk(t)}</td></tr>`).join('') }).join('')
+      + `<tr class="tr-total"><td>Total tiquetera</td><td class="r">${fmt(x.t.bol)}</td><td class="r">${short(x.t.tot)}</td><td class="r">${tk(x.t)}</td></tr></tbody></table>`;
+  }
+  return `<div class="ev-det"><div class="card"><h4>Por medio <span>· GA4</span></h4>${izq}</div><div class="card"><h4>Por función y localidad <span>· tiquetera, ingresos con servicio</span></h4>${der}</div></div>`;
 }
 
 // ---------- 4. Por canal ----------
@@ -615,7 +655,6 @@ function renderCanales(f) {
       plugins: { legend: { position: 'right', labels: { font: { family: 'Poppins', size: 11 }, boxWidth: 10, generateLabels: ch => ch.data.labels.map((l, i) => ({ text: l + '  ' + pct(ch.data.datasets[0].data[i], tot.bol), fillStyle: ch.data.datasets[0].backgroundColor[i], strokeStyle: 'transparent', index: i })) } },
         tooltip: { callbacks: { label: c => c.label + ': ' + fmt(c.raw) + ' boletas · ' + pct(c.raw, tot.bol) } } } }
   });
-  renderMix(f);
 }
 
 const CANAL_COLOR = {
@@ -624,26 +663,6 @@ const CANAL_COLOR = {
   'OTROS REFERIDOS': '#c4c3bc', 'SIN DATO / OTROS': '#e1e0da',
 };
 const colorCanal = c => CANAL_COLOR[c] || '#d6d5cf';
-
-// barra al 100% por evento: qué parte de sus boletas viene de cada canal
-function renderMix(f) {
-  const rs = rows(f).filter(r => r.bol > 0 && r.ev !== 'SIN DATO' && r.ev !== 'SIN HOMOLOGAR');
-  const porEv = {}; rs.forEach(r => { const e = porEv[r.ev] = porEv[r.ev] || { tot: 0, c: {} }; e.tot += r.bol; e.c[r.canal] = (e.c[r.canal] || 0) + r.bol });
-  const evs = Object.keys(porEv).sort((a, b) => porEv[b].tot - porEv[a].tot).slice(0, 14);
-  const canales = Object.keys(CANAL_COLOR).filter(c => evs.some(e => porEv[e].c[c]));
-  document.getElementById('mix-wrap').style.height = Math.max(evs.length * 34 + 70, 160) + 'px';
-  CHARTS.mix?.destroy();
-  CHARTS.mix = new Chart(document.getElementById('chart-mix'), {
-    type: 'bar',
-    data: { labels: evs.map(e => e + '  (' + fmt(porEv[e].tot) + ')'),
-      datasets: canales.map(c => ({ label: c, data: evs.map(e => (porEv[e].c[c] || 0) / porEv[e].tot * 100), raw: evs.map(e => porEv[e].c[c] || 0), backgroundColor: colorCanal(c), borderColor: '#fcfcfa', borderWidth: { right: 1 } })) },
-    options: { indexAxis: 'y', maintainAspectRatio: false,
-      plugins: { legend: { position: 'top', labels: { font: { family: 'Poppins', size: 11 }, boxWidth: 10 } },
-        tooltip: { callbacks: { label: c => c.dataset.label + ': ' + fmt(c.dataset.raw[c.dataIndex]) + ' boletas · ' + c.raw.toLocaleString('es-CO', { maximumFractionDigits: 0 }) + '%' } } },
-      scales: { x: { stacked: true, max: 100, ticks: { callback: v => v + '%', font: { family: 'Poppins', size: 11 } }, grid: { color: 'rgba(5,5,5,.06)' } },
-        y: { stacked: true, grid: { display: false }, ticks: { font: { family: 'Poppins', size: 11 } } } } }
-  });
-}
 
 // ---------- 5. Evolución ----------
 function setEvo(m) { EVO = m; document.querySelectorAll('[data-ev]').forEach(b => b.classList.toggle('on', b.dataset.ev === m)); renderEvo(filtros()) }
@@ -657,27 +676,35 @@ function etiqueta(p) {
   return (EVO === 'sem' ? 'Sem. ' : '') + fdate(p);
 }
 function renderEvo(f) {
-  const rs = rows(f);
-  const por = {}; rs.forEach(r => (por[periodo(r.d)] = por[periodo(r.d)] || []).push(r));
-  const ps = Object.keys(por).sort(), aa = ps.map(p => suma(por[p]));
-  document.getElementById('evo-note').textContent = { dia: 'por día', sem: 'por semana (lunes a domingo)', mes: 'por mes' }[EVO];
+  const rs = rows(f), ars = apiRows(f);
+  const P = {}, de = p => P[p] = P[p] || { xs: [], ys: [] };
+  rs.forEach(r => de(periodo(r.d)).xs.push(r));
+  ars.forEach(r => de(periodo(r.d)).ys.push(r));
+  const ps = Object.keys(P).sort(), aa = ps.map(p => suma(P[p].xs)), tt = ps.map(p => sumApi(P[p].ys));
+  document.getElementById('evo-note').textContent = { dia: 'por día', sem: 'por semana (lunes a domingo)', mes: 'por mes' }[EVO] + ' · boletas de la tiquetera frente a boletas por pauta';
   CHARTS.evo?.destroy();
   CHARTS.evo = new Chart(document.getElementById('chart-evo'), {
     data: { labels: ps.map(etiqueta), datasets: [
-      { type: 'bar', label: 'Inversión', data: aa.map(a => a.inv), backgroundColor: '#5B8FE8', yAxisID: 'y', order: 3 },
-      { type: 'line', label: 'Boletas por pauta', data: aa.map(a => a.bolP), borderColor: '#050505', backgroundColor: '#050505', yAxisID: 'y1', tension: .25, pointRadius: 2, order: 1 },
-      { type: 'line', label: 'Boletas totales', data: aa.map(a => a.bol), borderColor: '#9a9992', backgroundColor: '#9a9992', borderDash: [4, 4], yAxisID: 'y1', tension: .25, pointRadius: 0, order: 2 },
+      { type: 'line', label: 'Boletas vendidas (tiquetera)', data: tt.map(t => t.bol), borderColor: '#050505', backgroundColor: '#050505', yAxisID: 'y1', tension: .25, pointRadius: 2, order: 1 },
+      { type: 'line', label: 'Boletas por pauta (GA4)', data: aa.map(a => a.bolP), borderColor: '#2a5bb5', backgroundColor: '#2a5bb5', yAxisID: 'y1', tension: .25, pointRadius: 2, order: 2 },
+      { type: 'bar', label: 'Inversión Meta', data: aa.map(a => a.inv), backgroundColor: '#c7d8f6', yAxisID: 'y', order: 3 },
     ] },
     options: { maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
       plugins: { legend: { labels: { font: { family: 'Poppins', size: 11 }, boxWidth: 12 } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (c.dataset.yAxisID === 'y' ? money(c.raw) : fmt(c.raw)) } } },
-      scales: { y: { position: 'left', grid: { color: 'rgba(5,5,5,.06)' }, ticks: { callback: v => short(v), font: { family: 'Poppins', size: 11 } } },
-        y1: { position: 'right', grid: { display: false }, ticks: { font: { family: 'Poppins', size: 11 } } }, x: { grid: { display: false }, ticks: { font: { family: 'Poppins', size: 11 } } } } }
+      scales: { y: { position: 'right', grid: { display: false }, ticks: { callback: v => short(v), font: { family: 'Poppins', size: 11 } } },
+        y1: { position: 'left', grid: { color: 'rgba(5,5,5,.06)' }, title: { display: true, text: 'Boletas', font: { family: 'Poppins', size: 11 } }, ticks: { font: { family: 'Poppins', size: 11 } } },
+        x: { grid: { display: false }, ticks: { font: { family: 'Poppins', size: 11 } } } } }
   });
-  document.getElementById('evo-head').innerHTML = '<tr><th>Mes</th><th class="r">Inversión</th><th class="r">Boletas</th><th class="r">Por pauta</th><th class="r">% pauta</th><th class="r">Ingresos</th><th class="r">Costo/boleta</th><th class="r">ROAS</th></tr>';
-  const pm = {}; rs.forEach(r => (pm[r.d.slice(0, 7)] = pm[r.d.slice(0, 7)] || []).push(r));
-  const meses = Object.keys(pm).sort(), am = meses.map(m => suma(pm[m])), mesTxt = m => new Date(m + '-15T12:00:00Z').toLocaleDateString('es-CO', { month: 'long', year: 'numeric', timeZone: 'UTC' });
-  document.getElementById('evo-body').innerHTML = meses.map((p, i) => { const a = am[i]; return `<tr><td>${mesTxt(p)}</td><td class="r">${money(a.inv)}</td><td class="r">${fmt(a.bol)}</td><td class="r">${fmt(a.bolP)}</td><td class="r">${pct(a.bolP, a.bol)}</td><td class="r">${short(a.cop)}</td><td class="r">${a.bolPEdt ? money(a.invEdt / a.bolPEdt) : '—'}</td><td class="r">${roas(a.copPEdt, a.invEdt)}</td></tr>` }).reverse().join('')
-    + (() => { const t = suma(rs); return `<tr class="tr-total"><td>Total</td><td class="r">${money(t.inv)}</td><td class="r">${fmt(t.bol)}</td><td class="r">${fmt(t.bolP)}</td><td class="r">${pct(t.bolP, t.bol)}</td><td class="r">${short(t.cop)}</td><td class="r">${t.bolPEdt ? money(t.invEdt / t.bolPEdt) : '—'}</td><td class="r">${roas(t.copPEdt, t.invEdt)}</td></tr>` })();
+  // mes a mes
+  document.getElementById('evo-head').innerHTML = '<tr><th>Mes</th><th class="r">Inversión</th><th class="r ini">Boletas tiquetera</th><th class="r">Ingresos tiquetera</th><th class="r ini">Boletas pauta</th><th class="r">Ingresos pauta</th><th class="r">Costo/boleta pauta</th><th class="r">ROAS</th></tr>';
+  const M = {}, dm = m => M[m] = M[m] || { xs: [], ys: [] };
+  rs.forEach(r => dm(r.d.slice(0, 7)).xs.push(r));
+  ars.forEach(r => dm(r.d.slice(0, 7)).ys.push(r));
+  const mesTxt = m => new Date(m + '-15T12:00:00Z').toLocaleDateString('es-CO', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const fila = (lbl, a, t, cls) => `<tr${cls ? ' class="' + cls + '"' : ''}><td>${lbl}</td><td class="r">${money(a.inv)}</td><td class="r ini">${API_OK ? fmt(t.bol) : '—'}</td><td class="r">${API_OK ? short(t.tot) : '—'}</td>
+    <td class="r ini">${fmt(a.bolP)}</td><td class="r">${short(a.copP)}</td><td class="r">${a.bolPEdt ? money(a.invEdt / a.bolPEdt) : '—'}</td><td class="r">${roas(a.copPEdt, a.invEdt)}</td></tr>`;
+  document.getElementById('evo-body').innerHTML = Object.keys(M).sort().reverse().map(m => fila(mesTxt(m), suma(M[m].xs), sumApi(M[m].ys))).join('')
+    + fila('Total', suma(rs), sumApi(ars), 'tr-total');
 }
 
 // ---------- 6. Anuncios ----------
