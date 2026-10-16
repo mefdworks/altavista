@@ -265,7 +265,7 @@ tr.det>td{padding:0 !important;background:#fafafa !important}
     <div class="kpi-group">Pauta <span>Meta + GA4</span></div>
     <div class="kpi-grid" id="kpi-pauta"></div>
     <div class="kpi-group">Venta real <span>tiquetera Entradas de Teatro</span></div>
-    <div class="kpi-grid k3" id="kpi-venta"></div>
+    <div class="kpi-grid" id="kpi-venta"></div>
 
     <div class="sec-title" id="sec-evento"><span></span>Cartelera en pauta<span class="sec-note">clic en un evento para ver sus medios (GA4) y sus funciones y localidades (tiquetera)</span></div>
     <div class="card tcard">
@@ -277,8 +277,8 @@ tr.det>td{padding:0 !important;background:#fafafa !important}
       </div>
       <div class="tscroll"><table><thead id="ev-head"></thead><tbody id="ev-body"></tbody></table></div>
       <div class="foot-note">
-        <b>Tiquetera</b>: ventas reales de Entradas de Teatro (API), netas de devoluciones y cancelaciones; los ingresos incluyen el servicio, que es lo que paga el comprador. La tiquetera no dice por qué medio llegó la venta.
-        <b>Pauta</b>: boletas e ingresos que GA4 atribuye al canal META PAUTA (Item revenue × TRM del día). <b>% de la venta</b> = boletas por pauta ÷ boletas de la tiquetera.
+        <b>Tiquetera</b>: ventas reales de Entradas de Teatro (API), netas de devoluciones y cancelaciones; la venta de boletas va sin servicio y el servicio (cargo de la tiquetera) va aparte; sumados son lo que pagó el comprador. La tiquetera no dice por qué medio llegó la venta.
+        <b>Pauta</b>: boletas e ingresos que GA4 atribuye al canal META PAUTA (Item revenue × TRM del día), sin servicio, igual que la venta de boletas. <b>% de la venta</b> = boletas por pauta ÷ boletas de la tiquetera.
         <b>Costo por boleta</b> = inversión ÷ boletas por pauta. <b>ROAS</b> = ingresos por pauta ÷ inversión.
         Los eventos de otras tiqueteras muestran las compras del pixel de Meta como referencia (marcadas <i>px</i>), porque ni GA4 ni la API ven esas ventas.
       </div>
@@ -385,7 +385,7 @@ function build(rg, pres, et) {
       const d = iso(x[0]); if (!d) return;
       const nombre = String(x[2] || '').trim() || 'SIN HOMOLOGAR', ev = pn[norm(nombre)] || nombre; pn[norm(nombre)] = ev;
       const fn = String(x[5] || '').trim();
-      API.push({ d, ev, fn, prod: String(x[6] || '').trim() || 'Sin localidad', bol: nx(x[7]), tot: nx(x[10]) });
+      API.push({ d, ev, fn, prod: String(x[6] || '').trim() || 'Sin localidad', bol: nx(x[7]), vb: nx(x[8]), serv: nx(x[9]), tot: nx(x[10]) });
       if (ev === 'SIN HOMOLOGAR' || ev === 'SIN DATO') return;
       API_EVS.add(ev); EVENTOS[ev] = EVENTOS[ev] || { tiq: EDT };
       if (iso(fn)) (FUNCIONES[ev] = FUNCIONES[ev] || new Set()).add(fn);
@@ -489,7 +489,7 @@ function rows(f, conFechas = true, conCanal = true) {
 function apiRows(f) {
   return API.filter(r => r.d >= f.desde && r.d <= f.hasta && pasaEvento(r.ev, f));
 }
-function sumApi(rs) { const t = { bol: 0, tot: 0 }; rs.forEach(r => { t.bol += r.bol; t.tot += r.tot }); return t }
+function sumApi(rs) { const t = { bol: 0, vb: 0, serv: 0, tot: 0 }; rs.forEach(r => { t.bol += r.bol; t.vb += r.vb; t.serv += r.serv; t.tot += r.tot }); return t }
 const vacio = () => ({ inv: 0, cm: 0, vm: 0, bol: 0, cop: 0, bolP: 0, copP: 0, invEdt: 0, bolPEdt: 0, copPEdt: 0 });
 function suma(rs) {
   const a = vacio();
@@ -522,9 +522,10 @@ function renderKpis(f) {
     ['ROAS pauta', roas(a.copPEdt, a.invEdt), 'ingresos por pauta ÷ inversión', true],
   ].map(card).join('');
   document.getElementById('kpi-venta').innerHTML = [
-    ['Boletas vendidas', API_OK ? fmt(t.bol) : '—', !API_OK ? 'falta la pestaña ET_VENTAS' : t.bol ? 'tiquetera · ticket medio ' + money(t.tot / t.bol) : 'sin ventas en el rango'],
-    ['Ingresos tiquetera', API_OK ? short(t.tot) : '—', 'venta total con servicio'],
-    ['Ingresos por pauta', short(a.copP), t.tot ? 'GA4 · ' + pct(a.copP, t.tot) + ' de los ingresos de la tiquetera' : 'GA4 · canal META PAUTA'],
+    ['Boletas vendidas', API_OK ? fmt(t.bol) : '—', !API_OK ? 'falta la pestaña ET_VENTAS' : t.bol ? 'tiquetera · ticket medio ' + money(t.vb / t.bol) : 'sin ventas en el rango'],
+    ['Venta de boletas', API_OK ? short(t.vb) : '—', 'tiquetera · sin servicio'],
+    ['Servicio', API_OK ? short(t.serv) : '—', t.tot ? pct(t.serv, t.tot) + ' de lo que pagó el comprador · total ' + short(t.tot) : 'cargo de la tiquetera'],
+    ['Ingresos por pauta', short(a.copP), t.vb ? 'GA4 · ' + pct(a.copP, t.vb) + ' de la venta de boletas' : 'GA4 · canal META PAUTA, sin servicio'],
   ].map(card).join('');
 }
 
@@ -532,7 +533,7 @@ function renderKpis(f) {
 const EV_COLS = [
   ['ev', 'Evento', 0, ''], ['fnd', 'Función', 0, ''],
   ['pres', 'Presupuesto', 1, 'ini'], ['inv', 'Inversión', 1, ''], ['ejec', '% ejec.', 1, ''],
-  ['tb', 'Boletas', 1, 'ini'], ['ti', 'Ingresos', 1, ''],
+  ['tb', 'Boletas', 1, 'ini'], ['ti', 'Venta boletas', 1, ''], ['tsv', 'Servicio', 1, ''],
   ['bolP', 'Boletas', 1, 'ini'], ['pctP', '% de la venta', 1, ''], ['cpb', 'Costo/boleta', 1, ''], ['roas', 'ROAS', 1, ''],
 ];
 function sortBy(k) { SORT = { k, dir: SORT.k === k ? -SORT.dir : -1 }; renderEventos(filtros()) }
@@ -562,15 +563,15 @@ function renderEventos(f) {
     const a = suma(g.xs), t = sumApi(g.ys), edt = vendeEnEdt(ev), p = PRES[ev];
     const presOk = p && p.pres > 0 && p.pres < PRESUPUESTO_MAX, fn = funcionDe(ev);
     return { ev, xs: g.xs, ys: g.ys, a, t, edt, fn, tiq: EVENTOS[ev]?.tiq || '', estado: EVENTOS[ev]?.estado || 'SIN PAUTA',
-      pres: presOk ? p.pres : 0, inv: a.inv, ejec: presOk ? a.inv / p.pres : -1, fnd: fn.k, tb: t.bol, ti: t.tot,
+      pres: presOk ? p.pres : 0, inv: a.inv, ejec: presOk ? a.inv / p.pres : -1, fnd: fn.k, tb: t.bol, ti: t.vb, tsv: t.serv,
       bolP: edt ? a.bolP : -1, pctP: edt && t.bol ? a.bolP / t.bol : -1,
       cpb: edt && a.bolP ? a.inv / a.bolP : (edt ? -1 : -2), roas: edt && a.inv ? a.copP / a.inv : -1 };
-  }).filter(x => x.inv || x.a.bol || x.a.cm || x.t.bol || x.t.tot);
+  }).filter(x => x.inv || x.a.bol || x.a.cm || x.t.bol || x.t.tot || x.t.serv);
   const k = SORT.k;
   lista.sort((a, b) => (typeof a[k] === 'string' ? a[k].localeCompare(b[k]) : a[k] - b[k]) * SORT.dir);
 
   document.getElementById('ev-head').innerHTML =
-    '<tr class="th-grp"><th colspan="2"></th><th colspan="3" class="g ini">Meta</th><th colspan="2" class="g ini">Tiquetera</th><th colspan="4" class="g ini">Pauta · GA4</th></tr><tr>'
+    '<tr class="th-grp"><th colspan="2"></th><th colspan="3" class="g ini">Meta</th><th colspan="3" class="g ini">Tiquetera</th><th colspan="4" class="g ini">Pauta · GA4</th></tr><tr>'
     + EV_COLS.map(c => `<th class="sortable${c[2] ? ' r' : ''}${c[3] ? ' ' + c[3] : ''}${k === c[0] ? ' sort-act' : ''}" onclick="sortBy('${c[0]}')">${c[1]}${k === c[0] ? (SORT.dir < 0 ? ' ↓' : ' ↑') : ''}</th>`).join('') + '</tr>';
   const tagEst = e => `<span class="tag ${e === 'ACTIVA' ? 'tag-act' : e === 'ARCHIVADA' ? 'tag-arc' : 'tag-pau'}">${e.charAt(0) + e.slice(1).toLowerCase()}</span>`;
   let html = '';
@@ -581,7 +582,7 @@ function renderEventos(f) {
       <td><span class="tog${open ? ' open' : ''}">▶</span>${esc(x.ev)}<span class="ev-sub2">${tagEst(x.estado)}${!x.edt && x.tiq ? ' <span class="tag tag-otra">' + esc(x.tiq) + '</span>' : ''}</span></td>
       <td>${x.fn.txt}<span class="ev-sub2">${x.fn.sub}</span></td>
       <td class="r ini">${x.pres ? short(x.pres) : '—'}</td><td class="r">${a.inv ? money(a.inv) : '—'}</td><td class="r">${x.pres ? pct(a.inv, x.pres) : '—'}</td>
-      <td class="r ini">${hayApi ? fmt(x.t.bol) : '—'}</td><td class="r">${hayApi ? short(x.t.tot) : '—'}</td>
+      <td class="r ini">${hayApi ? fmt(x.t.bol) : '—'}</td><td class="r">${hayApi ? short(x.t.vb) : '—'}</td><td class="r">${hayApi ? short(x.t.serv) : '—'}</td>
       <td class="r ini">${x.edt ? fmt(a.bolP) : '—'}</td><td class="r">${x.edt && x.t.bol ? pct(a.bolP, x.t.bol) : '—'}</td>
       <td class="r">${x.edt && a.inv && a.bolP ? money(a.inv / a.bolP) : !x.edt && a.cm ? px(money(a.inv / a.cm), 'costo por compra del pixel de Meta') : '—'}</td>
       <td class="r">${x.edt && a.inv ? roas(a.copP, a.inv) : !x.edt && a.inv && a.vm ? px(roas(a.vm, a.inv), 'ROAS del pixel de Meta') : '—'}</td></tr>`;
@@ -589,7 +590,7 @@ function renderEventos(f) {
   });
   const t = suma(rs), ta = sumApi(ars);
   html += `<tr class="tr-total"><td>Total</td><td></td><td class="r ini"></td><td class="r">${money(t.inv)}</td><td></td>
-    <td class="r ini">${API_OK ? fmt(ta.bol) : '—'}</td><td class="r">${API_OK ? short(ta.tot) : '—'}</td>
+    <td class="r ini">${API_OK ? fmt(ta.bol) : '—'}</td><td class="r">${API_OK ? short(ta.vb) : '—'}</td><td class="r">${API_OK ? short(ta.serv) : '—'}</td>
     <td class="r ini">${fmt(t.bolP)}</td><td class="r">${ta.bol ? pct(t.bolP, ta.bol) : '—'}</td>
     <td class="r">${t.bolPEdt ? money(t.invEdt / t.bolPEdt) : '—'}</td><td class="r">${roas(t.copPEdt, t.invEdt)}</td></tr>`;
   document.getElementById('ev-body').innerHTML = html;
@@ -613,15 +614,17 @@ function detalleEvento(x) {
   if (!x.ys.length) {
     der = `<div class="vacio">${x.edt ? 'Sin ventas en la tiquetera en este rango.' : 'La API de Entradas de Teatro no tiene las ventas de este evento.'}</div>`;
   } else {
-    const fs = {}; x.ys.forEach(r => { const g = fs[r.fn] = fs[r.fn] || { t: { bol: 0, tot: 0 }, p: {} }; g.t.bol += r.bol; g.t.tot += r.tot; const q = g.p[r.prod] = g.p[r.prod] || { bol: 0, tot: 0 }; q.bol += r.bol; q.tot += r.tot });
-    const tk = t => t.bol > 0 ? money(t.tot / t.bol) : '—';
-    der = `<table>${th(['Función / localidad', 'Boletas', 'Ingresos', 'Ticket medio'])}<tbody>`
+    const fs = {}; x.ys.forEach(r => { const g = fs[r.fn] = fs[r.fn] || { t: sumApi([]), p: {} }, q = g.p[r.prod] = g.p[r.prod] || sumApi([]);
+      [g.t, q].forEach(t => { t.bol += r.bol; t.vb += r.vb; t.serv += r.serv; t.tot += r.tot }) });
+    const tk = t => t.bol > 0 ? money(t.vb / t.bol) : '—';
+    const cs = t => `<td class="r">${fmt(t.bol)}</td><td class="r">${short(t.vb)}</td><td class="r">${short(t.serv)}</td><td class="r">${tk(t)}</td>`;
+    der = `<table>${th(['Función / localidad', 'Boletas', 'Venta boletas', 'Servicio', 'Ticket medio'])}<tbody>`
       + Object.keys(fs).sort((a, b) => iso(a).localeCompare(iso(b)) || a.localeCompare(b)).map(fn => { const g = fs[fn];
-        return `<tr class="fn"><td>${fn ? fnTxt(fn) : 'Sin función'}</td><td class="r">${fmt(g.t.bol)}</td><td class="r">${short(g.t.tot)}</td><td class="r">${tk(g.t)}</td></tr>`
-          + Object.entries(g.p).sort((p, q) => q[1].tot - p[1].tot).map(([pr, t]) => `<tr class="pr"><td>${esc(pr)}</td><td class="r">${fmt(t.bol)}</td><td class="r">${short(t.tot)}</td><td class="r">${tk(t)}</td></tr>`).join('') }).join('')
-      + `<tr class="tr-total"><td>Total tiquetera</td><td class="r">${fmt(x.t.bol)}</td><td class="r">${short(x.t.tot)}</td><td class="r">${tk(x.t)}</td></tr></tbody></table>`;
+        return `<tr class="fn"><td>${fn ? fnTxt(fn) : 'Sin función'}</td>${cs(g.t)}</tr>`
+          + Object.entries(g.p).sort((p, q) => q[1].tot - p[1].tot).map(([pr, t]) => `<tr class="pr"><td>${esc(pr)}</td>${cs(t)}</tr>`).join('') }).join('')
+      + `<tr class="tr-total"><td>Total tiquetera</td>${cs(x.t)}</tr></tbody></table>`;
   }
-  return `<div class="ev-det"><div class="card"><h4>Por medio <span>· GA4</span></h4>${izq}</div><div class="card"><h4>Por función y localidad <span>· tiquetera, ingresos con servicio</span></h4>${der}</div></div>`;
+  return `<div class="ev-det"><div class="card"><h4>Por medio <span>· GA4</span></h4>${izq}</div><div class="card"><h4>Por función y localidad <span>· tiquetera, servicio aparte</span></h4>${der}</div></div>`;
 }
 
 // ---------- 4. Por canal ----------
@@ -696,12 +699,12 @@ function renderEvo(f) {
         x: { grid: { display: false }, ticks: { font: { family: 'Poppins', size: 11 } } } } }
   });
   // mes a mes
-  document.getElementById('evo-head').innerHTML = '<tr><th>Mes</th><th class="r">Inversión</th><th class="r ini">Boletas tiquetera</th><th class="r">Ingresos tiquetera</th><th class="r ini">Boletas pauta</th><th class="r">Ingresos pauta</th><th class="r">Costo/boleta pauta</th><th class="r">ROAS</th></tr>';
+  document.getElementById('evo-head').innerHTML = '<tr><th>Mes</th><th class="r">Inversión</th><th class="r ini">Boletas tiquetera</th><th class="r">Venta boletas</th><th class="r">Servicio</th><th class="r ini">Boletas pauta</th><th class="r">Ingresos pauta</th><th class="r">Costo/boleta pauta</th><th class="r">ROAS</th></tr>';
   const M = {}, dm = m => M[m] = M[m] || { xs: [], ys: [] };
   rs.forEach(r => dm(r.d.slice(0, 7)).xs.push(r));
   ars.forEach(r => dm(r.d.slice(0, 7)).ys.push(r));
   const mesTxt = m => new Date(m + '-15T12:00:00Z').toLocaleDateString('es-CO', { month: 'long', year: 'numeric', timeZone: 'UTC' });
-  const fila = (lbl, a, t, cls) => `<tr${cls ? ' class="' + cls + '"' : ''}><td>${lbl}</td><td class="r">${money(a.inv)}</td><td class="r ini">${API_OK ? fmt(t.bol) : '—'}</td><td class="r">${API_OK ? short(t.tot) : '—'}</td>
+  const fila = (lbl, a, t, cls) => `<tr${cls ? ' class="' + cls + '"' : ''}><td>${lbl}</td><td class="r">${money(a.inv)}</td><td class="r ini">${API_OK ? fmt(t.bol) : '—'}</td><td class="r">${API_OK ? short(t.vb) : '—'}</td><td class="r">${API_OK ? short(t.serv) : '—'}</td>
     <td class="r ini">${fmt(a.bolP)}</td><td class="r">${short(a.copP)}</td><td class="r">${a.bolPEdt ? money(a.invEdt / a.bolPEdt) : '—'}</td><td class="r">${roas(a.copPEdt, a.invEdt)}</td></tr>`;
   document.getElementById('evo-body').innerHTML = Object.keys(M).sort().reverse().map(m => fila(mesTxt(m), suma(M[m].xs), sumApi(M[m].ys))).join('')
     + fila('Total', suma(rs), sumApi(ars), 'tr-total');
