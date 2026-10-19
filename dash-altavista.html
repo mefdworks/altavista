@@ -79,7 +79,7 @@ select:focus,input:focus{border-color:var(--accent)}
 .kpi-grid.k3{grid-template-columns:repeat(3,1fr)}
 .kpi-group{font-size:12px;font-weight:700;margin:0 0 6px;color:var(--fg-secondary)}
 .kpi-group span{font-weight:400;color:var(--gray-400);margin-left:4px}
-.kpi-grid#kpi-pauta{margin-bottom:12px}
+.kpi-grid#kpi-pauta,.kpi-grid#kpi-meta{margin-bottom:12px}
 .bg-pos{background:var(--c-pos)} .bg-mid{background:var(--c-mid)} .bg-neg{background:var(--c-neg)}
 .t-pos{color:var(--c-pos);font-weight:600} .t-mid{color:var(--c-mid);font-weight:600} .t-neg{color:var(--c-neg);font-weight:600} .t-mute{color:var(--gray-400)}
 
@@ -262,10 +262,12 @@ tr.det>td{padding:0 !important;background:#fafafa !important}
 
   <div class="content">
     <div class="sec-title" id="sec-kpi"><span></span>Resumen del rango<span class="sec-note" id="rango-note"></span></div>
-    <div class="kpi-group">Pauta <span>Meta + GA4</span></div>
+    <div class="kpi-group">Pauta · Meta <span>resultados de la plataforma (pixel), todas las tiqueteras</span></div>
+    <div class="kpi-grid" id="kpi-meta"></div>
+    <div class="kpi-group">Pauta · GA4 <span>boletas del canal META PAUTA en entradasdeteatro.co</span></div>
     <div class="kpi-grid" id="kpi-pauta"></div>
     <div class="kpi-group">Venta real <span>tiquetera Entradas de Teatro</span></div>
-    <div class="kpi-grid" id="kpi-venta"></div>
+    <div class="kpi-grid k3" id="kpi-venta"></div>
 
     <div class="sec-title" id="sec-evento"><span></span>Cartelera en pauta<span class="sec-note">clic en un evento para ver sus medios (GA4) y sus funciones y localidades (tiquetera)</span></div>
     <div class="card tcard">
@@ -280,7 +282,7 @@ tr.det>td{padding:0 !important;background:#fafafa !important}
         <b>Tiquetera</b>: ventas reales de Entradas de Teatro (API), netas de devoluciones y cancelaciones; la venta de boletas va sin servicio y el servicio (cargo de la tiquetera) va aparte; sumados son lo que pagó el comprador. La tiquetera no dice por qué medio llegó la venta.
         <b>Pauta</b>: boletas e ingresos que GA4 atribuye al canal META PAUTA (Item revenue × TRM del día), sin servicio, igual que la venta de boletas. <b>% de la venta</b> = boletas por pauta ÷ boletas de la tiquetera.
         <b>Costo por boleta</b> = inversión ÷ boletas por pauta. <b>ROAS</b> = ingresos por pauta ÷ inversión.
-        Los eventos de otras tiqueteras muestran las compras del pixel de Meta como referencia (marcadas <i>px</i>), porque ni GA4 ni la API ven esas ventas.
+        <b>Meta · plataforma</b>: compras y valor que reporta el pixel de Meta (7 días clic y 1 día vista); una compra es un pedido y puede traer varias boletas. En los eventos de otras tiqueteras es el único resultado de pauta, porque ni GA4 ni la API ven esas ventas.
       </div>
     </div>
 
@@ -515,17 +517,22 @@ function renderKpis(f) {
   const a = suma(rows(f)), t = sumApi(apiRows(f));
   const cpb = a.bolPEdt ? a.invEdt / a.bolPEdt : 0;
   const card = k => `<div class="card kpi-card${k[3] ? ' hl' : ''}"><div class="kpi-label">${k[0]}</div><div class="kpi-value">${k[1]}</div><div class="kpi-sub">${k[2]}</div></div>`;
-  document.getElementById('kpi-pauta').innerHTML = [
+  document.getElementById('kpi-meta').innerHTML = [
     ['Inversión Meta', money(a.inv), a.inv - a.invEdt > 0 ? short(a.inv - a.invEdt) + ' en eventos de otras tiqueteras' : 'todo en eventos de Entradas de Teatro', true],
-    ['Boletas por pauta', fmt(a.bolP), a.bolP ? 'GA4 · ticket medio ' + money(a.copP / a.bolP) : 'GA4 · canal META PAUTA', true],
-    ['Costo por boleta de pauta', cpb ? money(cpb) : '—', 'inversión ÷ boletas por pauta', true],
-    ['ROAS pauta', roas(a.copPEdt, a.invEdt), 'ingresos por pauta ÷ inversión', true],
+    ['Compras Meta', fmt(a.cm), a.cm ? 'pixel · costo por compra ' + money(a.inv / a.cm) : 'pixel de Meta', true],
+    ['Valor de compras', short(a.vm), a.cm ? 'pixel · valor medio por compra ' + money(a.vm / a.cm) : 'pixel de Meta', true],
+    ['ROAS Meta', roas(a.vm, a.inv), 'valor de compras ÷ inversión', true],
+  ].map(card).join('');
+  document.getElementById('kpi-pauta').innerHTML = [
+    ['Boletas por pauta', fmt(a.bolP), a.bolP ? 'GA4 · ticket medio ' + money(a.copP / a.bolP) : 'GA4 · canal META PAUTA'],
+    ['Ingresos por pauta', short(a.copP), t.vb ? 'GA4 · ' + pct(a.copP, t.vb) + ' de la venta de boletas' : 'GA4 · sin servicio'],
+    ['Costo por boleta de pauta', cpb ? money(cpb) : '—', 'inversión en eventos de ET ÷ boletas por pauta'],
+    ['ROAS GA4', roas(a.copPEdt, a.invEdt), 'ingresos por pauta ÷ inversión en eventos de ET'],
   ].map(card).join('');
   document.getElementById('kpi-venta').innerHTML = [
     ['Boletas vendidas', API_OK ? fmt(t.bol) : '—', !API_OK ? 'falta la pestaña ET_VENTAS' : t.bol ? 'tiquetera · ticket medio ' + money(t.vb / t.bol) : 'sin ventas en el rango'],
     ['Venta de boletas', API_OK ? short(t.vb) : '—', 'tiquetera · sin servicio'],
     ['Servicio', API_OK ? short(t.serv) : '—', t.tot ? pct(t.serv, t.tot) + ' de lo que pagó el comprador · total ' + short(t.tot) : 'cargo de la tiquetera'],
-    ['Ingresos por pauta', short(a.copP), t.vb ? 'GA4 · ' + pct(a.copP, t.vb) + ' de la venta de boletas' : 'GA4 · canal META PAUTA, sin servicio'],
   ].map(card).join('');
 }
 
@@ -533,6 +540,7 @@ function renderKpis(f) {
 const EV_COLS = [
   ['ev', 'Evento', 0, ''], ['fnd', 'Función', 0, ''],
   ['pres', 'Presupuesto', 1, 'ini'], ['inv', 'Inversión', 1, ''], ['ejec', '% ejec.', 1, ''],
+  ['cm', 'Compras', 1, ''], ['cpc', 'Costo/compra', 1, ''], ['roasM', 'ROAS', 1, ''],
   ['tb', 'Boletas', 1, 'ini'], ['ti', 'Venta boletas', 1, ''], ['tsv', 'Servicio', 1, ''],
   ['bolP', 'Boletas', 1, 'ini'], ['pctP', '% de la venta', 1, ''], ['cpb', 'Costo/boleta', 1, ''], ['roas', 'ROAS', 1, ''],
 ];
@@ -563,33 +571,35 @@ function renderEventos(f) {
     const a = suma(g.xs), t = sumApi(g.ys), edt = vendeEnEdt(ev), p = PRES[ev];
     const presOk = p && p.pres > 0 && p.pres < PRESUPUESTO_MAX, fn = funcionDe(ev);
     return { ev, xs: g.xs, ys: g.ys, a, t, edt, fn, tiq: EVENTOS[ev]?.tiq || '', estado: EVENTOS[ev]?.estado || 'SIN PAUTA',
-      pres: presOk ? p.pres : 0, inv: a.inv, ejec: presOk ? a.inv / p.pres : -1, fnd: fn.k, tb: t.bol, ti: t.vb, tsv: t.serv,
+      pres: presOk ? p.pres : 0, inv: a.inv, ejec: presOk ? a.inv / p.pres : -1, fnd: fn.k,
+      cm: a.cm, cpc: a.cm ? a.inv / a.cm : -1, roasM: a.inv ? a.vm / a.inv : -1, tb: t.bol, ti: t.vb, tsv: t.serv,
       bolP: edt ? a.bolP : -1, pctP: edt && t.bol ? a.bolP / t.bol : -1,
-      cpb: edt && a.bolP ? a.inv / a.bolP : (edt ? -1 : -2), roas: edt && a.inv ? a.copP / a.inv : -1 };
+      cpb: edt && a.bolP ? a.inv / a.bolP : -1, roas: edt && a.inv ? a.copP / a.inv : -1 };
   }).filter(x => x.inv || x.a.bol || x.a.cm || x.t.bol || x.t.tot || x.t.serv);
   const k = SORT.k;
   lista.sort((a, b) => (typeof a[k] === 'string' ? a[k].localeCompare(b[k]) : a[k] - b[k]) * SORT.dir);
 
   document.getElementById('ev-head').innerHTML =
-    '<tr class="th-grp"><th colspan="2"></th><th colspan="3" class="g ini">Meta</th><th colspan="3" class="g ini">Tiquetera</th><th colspan="4" class="g ini">Pauta · GA4</th></tr><tr>'
+    '<tr class="th-grp"><th colspan="2"></th><th colspan="6" class="g ini">Meta · plataforma</th><th colspan="3" class="g ini">Tiquetera</th><th colspan="4" class="g ini">Pauta · GA4</th></tr><tr>'
     + EV_COLS.map(c => `<th class="sortable${c[2] ? ' r' : ''}${c[3] ? ' ' + c[3] : ''}${k === c[0] ? ' sort-act' : ''}" onclick="sortBy('${c[0]}')">${c[1]}${k === c[0] ? (SORT.dir < 0 ? ' ↓' : ' ↑') : ''}</th>`).join('') + '</tr>';
   const tagEst = e => `<span class="tag ${e === 'ACTIVA' ? 'tag-act' : e === 'ARCHIVADA' ? 'tag-arc' : 'tag-pau'}">${e.charAt(0) + e.slice(1).toLowerCase()}</span>`;
   let html = '';
   lista.forEach(x => {
     const a = x.a, key = 'ev' + norm(x.ev), open = OPEN.has(key), hayApi = x.ys.length > 0;
-    const px = (v, t) => `<span class="t-mute" title="${t}">${v} px</span>`;
     html += `<tr class="lv1" data-k="${key}" onclick="OPEN.has('${key}')?OPEN.delete('${key}'):OPEN.add('${key}');renderEventos(filtros())">
       <td><span class="tog${open ? ' open' : ''}">▶</span>${esc(x.ev)}<span class="ev-sub2">${tagEst(x.estado)}${!x.edt && x.tiq ? ' <span class="tag tag-otra">' + esc(x.tiq) + '</span>' : ''}</span></td>
       <td>${x.fn.txt}<span class="ev-sub2">${x.fn.sub}</span></td>
       <td class="r ini">${x.pres ? short(x.pres) : '—'}</td><td class="r">${a.inv ? money(a.inv) : '—'}</td><td class="r">${x.pres ? pct(a.inv, x.pres) : '—'}</td>
+      <td class="r">${a.inv || a.cm ? fmt(a.cm) : '—'}</td><td class="r">${a.cm ? money(a.inv / a.cm) : '—'}</td><td class="r">${a.inv ? roas(a.vm, a.inv) : '—'}</td>
       <td class="r ini">${hayApi ? fmt(x.t.bol) : '—'}</td><td class="r">${hayApi ? short(x.t.vb) : '—'}</td><td class="r">${hayApi ? short(x.t.serv) : '—'}</td>
       <td class="r ini">${x.edt ? fmt(a.bolP) : '—'}</td><td class="r">${x.edt && x.t.bol ? pct(a.bolP, x.t.bol) : '—'}</td>
-      <td class="r">${x.edt && a.inv && a.bolP ? money(a.inv / a.bolP) : !x.edt && a.cm ? px(money(a.inv / a.cm), 'costo por compra del pixel de Meta') : '—'}</td>
-      <td class="r">${x.edt && a.inv ? roas(a.copP, a.inv) : !x.edt && a.inv && a.vm ? px(roas(a.vm, a.inv), 'ROAS del pixel de Meta') : '—'}</td></tr>`;
+      <td class="r">${x.edt && a.inv && a.bolP ? money(a.inv / a.bolP) : '—'}</td>
+      <td class="r">${x.edt && a.inv ? roas(a.copP, a.inv) : '—'}</td></tr>`;
     if (open) html += `<tr class="det"><td colspan="${EV_COLS.length}">${detalleEvento(x)}</td></tr>`;
   });
   const t = suma(rs), ta = sumApi(ars);
   html += `<tr class="tr-total"><td>Total</td><td></td><td class="r ini"></td><td class="r">${money(t.inv)}</td><td></td>
+    <td class="r">${fmt(t.cm)}</td><td class="r">${t.cm ? money(t.inv / t.cm) : '—'}</td><td class="r">${roas(t.vm, t.inv)}</td>
     <td class="r ini">${API_OK ? fmt(ta.bol) : '—'}</td><td class="r">${API_OK ? short(ta.vb) : '—'}</td><td class="r">${API_OK ? short(ta.serv) : '—'}</td>
     <td class="r ini">${fmt(t.bolP)}</td><td class="r">${ta.bol ? pct(t.bolP, ta.bol) : '—'}</td>
     <td class="r">${t.bolPEdt ? money(t.invEdt / t.bolPEdt) : '—'}</td><td class="r">${roas(t.copPEdt, t.invEdt)}</td></tr>`;
@@ -601,7 +611,7 @@ function detalleEvento(x) {
   const th = cols => '<thead><tr>' + cols.map((c, i) => `<th${i ? ' class="r"' : ''}>${c}</th>`).join('') + '</tr></thead>';
   let izq;
   if (!x.edt) {
-    izq = `<div class="vacio">Vende en ${esc(x.tiq || 'otra tiquetera')}: GA4 no ve estas ventas. Pixel de Meta en el rango: <b>${fmt(x.a.cm)}</b> compras por <b>${short(x.a.vm)}</b>.</div>`;
+    izq = `<div class="vacio">Vende en ${esc(x.tiq || 'otra tiquetera')}: GA4 no ve estas ventas, el resultado de la pauta es el de Meta: <b>${fmt(x.a.cm)}</b> compras por <b>${short(x.a.vm)}</b>.</div>`;
   } else {
     const pc = {}; x.xs.forEach(r => (pc[r.canal] = pc[r.canal] || []).push(r));
     const cs = Object.entries(pc).map(([c, rr]) => ({ c, a: suma(rr) })).filter(y => y.a.bol || y.a.inv).sort((p, q) => q.a.bol - p.a.bol || q.a.inv - p.a.inv);
@@ -684,27 +694,29 @@ function renderEvo(f) {
   rs.forEach(r => de(periodo(r.d)).xs.push(r));
   ars.forEach(r => de(periodo(r.d)).ys.push(r));
   const ps = Object.keys(P).sort(), aa = ps.map(p => suma(P[p].xs)), tt = ps.map(p => sumApi(P[p].ys));
-  document.getElementById('evo-note').textContent = { dia: 'por día', sem: 'por semana (lunes a domingo)', mes: 'por mes' }[EVO] + ' · boletas de la tiquetera frente a boletas por pauta';
+  document.getElementById('evo-note').textContent = { dia: 'por día', sem: 'por semana (lunes a domingo)', mes: 'por mes' }[EVO] + ' · boletas de la tiquetera frente a boletas por pauta (GA4) y compras Meta';
   CHARTS.evo?.destroy();
   CHARTS.evo = new Chart(document.getElementById('chart-evo'), {
     data: { labels: ps.map(etiqueta), datasets: [
       { type: 'line', label: 'Boletas vendidas (tiquetera)', data: tt.map(t => t.bol), borderColor: '#050505', backgroundColor: '#050505', yAxisID: 'y1', tension: .25, pointRadius: 2, order: 1 },
       { type: 'line', label: 'Boletas por pauta (GA4)', data: aa.map(a => a.bolP), borderColor: '#2a5bb5', backgroundColor: '#2a5bb5', yAxisID: 'y1', tension: .25, pointRadius: 2, order: 2 },
+      { type: 'line', label: 'Compras Meta (pixel)', data: aa.map(a => a.cm), borderColor: '#5B8FE8', backgroundColor: '#5B8FE8', borderDash: [5, 4], yAxisID: 'y1', tension: .25, pointRadius: 2, order: 2 },
       { type: 'bar', label: 'Inversión Meta', data: aa.map(a => a.inv), backgroundColor: '#c7d8f6', yAxisID: 'y', order: 3 },
     ] },
     options: { maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
       plugins: { legend: { labels: { font: { family: 'Poppins', size: 11 }, boxWidth: 12 } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (c.dataset.yAxisID === 'y' ? money(c.raw) : fmt(c.raw)) } } },
       scales: { y: { position: 'right', grid: { display: false }, ticks: { callback: v => short(v), font: { family: 'Poppins', size: 11 } } },
-        y1: { position: 'left', grid: { color: 'rgba(5,5,5,.06)' }, title: { display: true, text: 'Boletas', font: { family: 'Poppins', size: 11 } }, ticks: { font: { family: 'Poppins', size: 11 } } },
+        y1: { position: 'left', grid: { color: 'rgba(5,5,5,.06)' }, title: { display: true, text: 'Boletas / compras', font: { family: 'Poppins', size: 11 } }, ticks: { font: { family: 'Poppins', size: 11 } } },
         x: { grid: { display: false }, ticks: { font: { family: 'Poppins', size: 11 } } } } }
   });
   // mes a mes
-  document.getElementById('evo-head').innerHTML = '<tr><th>Mes</th><th class="r">Inversión</th><th class="r ini">Boletas tiquetera</th><th class="r">Venta boletas</th><th class="r">Servicio</th><th class="r ini">Boletas pauta</th><th class="r">Ingresos pauta</th><th class="r">Costo/boleta pauta</th><th class="r">ROAS</th></tr>';
+  document.getElementById('evo-head').innerHTML = '<tr><th>Mes</th><th class="r">Inversión</th><th class="r ini">Boletas tiquetera</th><th class="r">Venta boletas</th><th class="r">Servicio</th><th class="r ini">Compras Meta</th><th class="r">ROAS Meta</th><th class="r ini">Boletas pauta</th><th class="r">Ingresos pauta</th><th class="r">Costo/boleta pauta</th><th class="r">ROAS GA4</th></tr>';
   const M = {}, dm = m => M[m] = M[m] || { xs: [], ys: [] };
   rs.forEach(r => dm(r.d.slice(0, 7)).xs.push(r));
   ars.forEach(r => dm(r.d.slice(0, 7)).ys.push(r));
   const mesTxt = m => new Date(m + '-15T12:00:00Z').toLocaleDateString('es-CO', { month: 'long', year: 'numeric', timeZone: 'UTC' });
   const fila = (lbl, a, t, cls) => `<tr${cls ? ' class="' + cls + '"' : ''}><td>${lbl}</td><td class="r">${money(a.inv)}</td><td class="r ini">${API_OK ? fmt(t.bol) : '—'}</td><td class="r">${API_OK ? short(t.vb) : '—'}</td><td class="r">${API_OK ? short(t.serv) : '—'}</td>
+    <td class="r ini">${fmt(a.cm)}</td><td class="r">${roas(a.vm, a.inv)}</td>
     <td class="r ini">${fmt(a.bolP)}</td><td class="r">${short(a.copP)}</td><td class="r">${a.bolPEdt ? money(a.invEdt / a.bolPEdt) : '—'}</td><td class="r">${roas(a.copPEdt, a.invEdt)}</td></tr>`;
   document.getElementById('evo-body').innerHTML = Object.keys(M).sort().reverse().map(m => fila(mesTxt(m), suma(M[m].xs), sumApi(M[m].ys))).join('')
     + fila('Total', suma(rs), sumApi(ars), 'tr-total');
