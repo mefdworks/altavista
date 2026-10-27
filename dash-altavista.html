@@ -264,7 +264,7 @@ tr.det>td{padding:0 !important;background:#fafafa !important}
     <div class="sec-title" id="sec-kpi"><span></span>Resumen del rango<span class="sec-note" id="rango-note"></span></div>
     <div class="kpi-group">Pauta · Meta <span>resultados de la plataforma (pixel), todas las tiqueteras</span></div>
     <div class="kpi-grid" id="kpi-meta"></div>
-    <div class="kpi-group">Pauta · GA4 <span>boletas del canal META PAUTA en entradasdeteatro.co</span></div>
+    <div class="kpi-group">Pauta · GA4 <span>boletas del canal META PAUTA en entradasdeteatro.co y Tuboleta (Melendi)</span></div>
     <div class="kpi-grid" id="kpi-pauta"></div>
     <div class="kpi-group">Venta real <span>tiquetera Entradas de Teatro</span></div>
     <div class="kpi-grid k3" id="kpi-venta"></div>
@@ -286,7 +286,7 @@ tr.det>td{padding:0 !important;background:#fafafa !important}
       </div>
     </div>
 
-    <div class="sec-title" id="sec-canal"><span></span>Por canal<span class="sec-note">boletas e ingresos GA4 de entradasdeteatro.co</span></div>
+    <div class="sec-title" id="sec-canal"><span></span>Por canal<span class="sec-note">boletas e ingresos GA4 de entradasdeteatro.co y Tuboleta (Melendi)</span></div>
     <div class="three-col" id="grp-cards"></div>
     <div class="two-col">
       <div class="card chart-card"><div class="chart-title" id="dona-title"></div><div class="chart-wrap"><canvas id="chart-canal"></canvas></div></div>
@@ -327,7 +327,7 @@ const GRUPOS = {
 };
 const PRESUPUESTO_MAX = 200e6; // por encima de esto el presupuesto se marca como "revisar en la hoja"
 
-let RAW = [], API = [], API_EVS = new Set(), API_OK = false, FUNCIONES = {}, PRES = {}, EVENTOS = {}, CHARTS = {}, EVO = 'dia', SORT = { k: 'inv', dir: -1 }, OPEN = new Set();
+let RAW = [], API = [], API_EVS = new Set(), GA4_EVS = new Set(), API_OK = false, FUNCIONES = {}, PRES = {}, EVENTOS = {}, CHARTS = {}, EVO = 'dia', SORT = { k: 'inv', dir: -1 }, OPEN = new Set();
 
 // ---------- utilidades ----------
 const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
@@ -345,6 +345,8 @@ const roas = (a, b) => b ? (a / b).toLocaleString('es-CO', { maximumFractionDigi
 const fdate = d => d ? new Date(d + 'T12:00:00Z').toLocaleDateString('es-CO', { day: 'numeric', month: 'short', timeZone: 'UTC' }) : '—';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const vendeEnEdt = ev => API_EVS.has(ev) || (EVENTOS[ev]?.tiq || '').includes(EDT);
+// eventos con boletas en GA4: los de Entradas de Teatro y los que traen GA4 de su tiquetera (Melendi, desde G4_TB)
+const conGa4 = ev => vendeEnEdt(ev) || GA4_EVS.has(ev);
 const nx = v => Number(String(v ?? '').replace(/[^\d.-]/g, '')) || 0; // números de ET_VENTAS (punto decimal)
 const grupoDe = canal => Object.keys(GRUPOS).find(g => GRUPOS[g] && GRUPOS[g].includes(canal)) || 'Otras fuentes';
 
@@ -409,6 +411,7 @@ function build(rg, pres, et) {
     EVENTOS[ev] = EVENTOS[ev] || { tiq: '' };
   });
   Object.keys(EVENTOS).forEach(ev => EVENTOS[ev].estado = PRES[ev]?.estado || 'SIN PAUTA');
+  GA4_EVS = new Set(RAW.filter(r => r.bol || r.cop).map(r => r.ev));
   const ds = RAW.map(r => r.d).sort(); MIND = ds[0]; MAXD = ds[ds.length - 1];
 }
 
@@ -498,7 +501,7 @@ function suma(rs) {
   rs.forEach(r => {
     a.inv += r.inv; a.cm += r.cm; a.vm += r.vm; a.bol += r.bol; a.cop += r.cop;
     if (r.canal === PAUTA) { a.bolP += r.bol; a.copP += r.cop }
-    if (vendeEnEdt(r.ev)) { a.invEdt += r.inv; if (r.canal === PAUTA) { a.bolPEdt += r.bol; a.copPEdt += r.cop } }
+    if (conGa4(r.ev)) { a.invEdt += r.inv; if (r.canal === PAUTA) { a.bolPEdt += r.bol; a.copPEdt += r.cop } }
   });
   return a;
 }
@@ -526,8 +529,8 @@ function renderKpis(f) {
   document.getElementById('kpi-pauta').innerHTML = [
     ['Boletas por pauta', fmt(a.bolP), a.bolP ? 'GA4 · ticket medio ' + money(a.copP / a.bolP) : 'GA4 · canal META PAUTA'],
     ['Ingresos por pauta', short(a.copP), t.vb ? 'GA4 · ' + pct(a.copP, t.vb) + ' de la venta de boletas' : 'GA4 · sin servicio'],
-    ['Costo por boleta de pauta', cpb ? money(cpb) : '—', 'inversión en eventos de ET ÷ boletas por pauta'],
-    ['ROAS GA4', roas(a.copPEdt, a.invEdt), 'ingresos por pauta ÷ inversión en eventos de ET'],
+    ['Costo por boleta de pauta', cpb ? money(cpb) : '—', 'inversión en eventos con GA4 ÷ boletas por pauta'],
+    ['ROAS GA4', roas(a.copPEdt, a.invEdt), 'ingresos por pauta ÷ inversión en eventos con GA4'],
   ].map(card).join('');
   document.getElementById('kpi-venta').innerHTML = [
     ['Boletas vendidas', API_OK ? fmt(t.bol) : '—', !API_OK ? 'falta la pestaña ET_VENTAS' : t.bol ? 'tiquetera · ticket medio ' + money(t.vb / t.bol) : 'sin ventas en el rango'],
@@ -568,9 +571,9 @@ function renderEventos(f) {
   rs.forEach(r => de(r.ev).xs.push(r));
   ars.forEach(r => de(r.ev).ys.push(r));
   const lista = Object.entries(por).map(([ev, g]) => {
-    const a = suma(g.xs), t = sumApi(g.ys), edt = vendeEnEdt(ev), p = PRES[ev];
+    const a = suma(g.xs), t = sumApi(g.ys), edt = conGa4(ev), api = vendeEnEdt(ev), p = PRES[ev];
     const presOk = p && p.pres > 0 && p.pres < PRESUPUESTO_MAX, fn = funcionDe(ev);
-    return { ev, xs: g.xs, ys: g.ys, a, t, edt, fn, tiq: EVENTOS[ev]?.tiq || '', estado: EVENTOS[ev]?.estado || 'SIN PAUTA',
+    return { ev, xs: g.xs, ys: g.ys, a, t, edt, api, fn, tiq: EVENTOS[ev]?.tiq || '', estado: EVENTOS[ev]?.estado || 'SIN PAUTA',
       pres: presOk ? p.pres : 0, inv: a.inv, ejec: presOk ? a.inv / p.pres : -1, fnd: fn.k,
       cm: a.cm, cpc: a.cm ? a.inv / a.cm : -1, roasM: a.inv ? a.vm / a.inv : -1, tb: t.bol, ti: t.vb, tsv: t.serv,
       bolP: edt ? a.bolP : -1, pctP: edt && t.bol ? a.bolP / t.bol : -1,
@@ -587,7 +590,7 @@ function renderEventos(f) {
   lista.forEach(x => {
     const a = x.a, key = 'ev' + norm(x.ev), open = OPEN.has(key), hayApi = x.ys.length > 0;
     html += `<tr class="lv1" data-k="${key}" onclick="OPEN.has('${key}')?OPEN.delete('${key}'):OPEN.add('${key}');renderEventos(filtros())">
-      <td><span class="tog${open ? ' open' : ''}">▶</span>${esc(x.ev)}<span class="ev-sub2">${tagEst(x.estado)}${!x.edt && x.tiq ? ' <span class="tag tag-otra">' + esc(x.tiq) + '</span>' : ''}</span></td>
+      <td><span class="tog${open ? ' open' : ''}">▶</span>${esc(x.ev)}<span class="ev-sub2">${tagEst(x.estado)}${!x.api && x.tiq ? ' <span class="tag tag-otra">' + esc(x.tiq) + '</span>' : ''}</span></td>
       <td>${x.fn.txt}<span class="ev-sub2">${x.fn.sub}</span></td>
       <td class="r ini">${x.pres ? short(x.pres) : '—'}</td><td class="r">${a.inv ? money(a.inv) : '—'}</td><td class="r">${x.pres ? pct(a.inv, x.pres) : '—'}</td>
       <td class="r">${a.inv || a.cm ? fmt(a.cm) : '—'}</td><td class="r">${a.cm ? money(a.inv / a.cm) : '—'}</td><td class="r">${a.inv ? roas(a.vm, a.inv) : '—'}</td>
@@ -622,7 +625,7 @@ function detalleEvento(x) {
   }
   let der;
   if (!x.ys.length) {
-    der = `<div class="vacio">${x.edt ? 'Sin ventas en la tiquetera en este rango.' : 'La API de Entradas de Teatro no tiene las ventas de este evento.'}</div>`;
+    der = `<div class="vacio">${x.api ? 'Sin ventas en la tiquetera en este rango.' : 'La API de Entradas de Teatro no tiene las ventas de este evento.'}</div>`;
   } else {
     const fs = {}; x.ys.forEach(r => { const g = fs[r.fn] = fs[r.fn] || { t: sumApi([]), p: {} }, q = g.p[r.prod] = g.p[r.prod] || sumApi([]);
       [g.t, q].forEach(t => { t.bol += r.bol; t.vb += r.vb; t.serv += r.serv; t.tot += r.tot }) });
@@ -673,7 +676,7 @@ function renderCanales(f) {
 const CANAL_COLOR = {
   'META PAUTA': '#5B8FE8', 'GOOGLE ADS': '#a9c4f2', 'META ORGÁNICO': '#1baf7a', 'BÚSQUEDA ORGÁNICA': '#eb6834', 'DIRECTO': '#050505',
   'SITIO ASTOR / ALTAVISTA': '#8a6d3b', 'WHATSAPP / CRM': '#25a35a', 'PASARELA DE PAGO': '#c2261c', 'IA': '#7c5cd6', 'TIKTOK': '#ff5c8a',
-  'OTROS REFERIDOS': '#c4c3bc', 'SIN DATO / OTROS': '#e1e0da',
+  'OTROS REFERIDOS': '#c4c3bc', 'OTROS ANUNCIANTES TUBOLETA': '#b3a98f', 'SIN DATO / OTROS': '#e1e0da',
 };
 const colorCanal = c => CANAL_COLOR[c] || '#d6d5cf';
 
