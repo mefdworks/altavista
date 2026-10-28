@@ -944,7 +944,7 @@ function renderEmbudo(f) {
   rs.forEach(r => { const x = por[r.ev] = por[r.ev] || { ev: r.ev, ses: 0, chk: 0, comp: 0, bol: 0, inv: 0 }; x.ses += r.ses; x.chk += r.chk; x.comp += r.comp; x.bol += r.bol });
   let inv = 0;
   rows(f, true, false).forEach(r => { if (por[r.ev]) { por[r.ev].inv += r.inv; inv += r.inv } });
-  note.textContent = fdate(f.desde) + ' – ' + fdate(f.hasta) + ' · GA4 de entradasdeteatro.co, solo campañas homologadas';
+  note.textContent = fdate(f.desde) + ' – ' + fdate(f.hasta) + ' · GA4 de entradasdeteatro.co, todo el tráfico del sitio';
 
   if (!T.ses) {
     wrap.innerHTML = '<div class="vacio">Sin sesiones de pauta homologadas en este rango y filtros.</div>';
