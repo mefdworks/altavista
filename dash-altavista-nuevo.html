@@ -466,7 +466,7 @@ function fetchTab(sheet) {
 function load() {
   document.getElementById('loading').style.display = 'flex';
   document.getElementById('ld-msg').textContent = 'Cargando datos...';
-  Promise.all([fetchTab('RESUMEN GENERAL'), fetchTab('PRESUPUESTO'), fetchTab('ANUNCIOS').catch(() => []), fetchTab('PREVIEWS').catch(() => []), fetchTab('ET_VENTAS').catch(() => []), fetchTab('EMBUDO').catch(() => []), fetchTab('HOM_EMB').catch(() => [])]).then(([rg, pres, ads, prev, et, emb, homEmb]) => {
+  Promise.all([fetchTab('RESUMEN GENERAL'), fetchTab('PRESUPUESTO'), fetchTab('ANUNCIOS').catch(() => []), fetchTab('PREVIEWS').catch(() => []), fetchTab('ET_VENTAS').catch(() => []), fetchTab('EMBUDO').catch(() => []), fetchTab('TITULOS_SIN_EVENTO').catch(() => [])]).then(([rg, pres, ads, prev, et, emb, homEmb]) => {
     build(rg.slice(1), pres.slice(1), et);
     buildEmb(emb, homEmb);
     buildAds(ads, prev);
@@ -883,7 +883,7 @@ function renderAds(f) {
 // ---------- 7. Capa nueva: resumen visual, embudo, rankings y calendario de ventas ----------
 const pctf = (a, b) => { if (!b) return '—'; const v = a / b * 100; return v.toLocaleString('es-CO', { maximumFractionDigits: v < 1 ? 2 : v < 10 ? 1 : 0 }) + '%' };
 
-// EMBUDO: Fecha | Mes | Evento | Sesiones | Cartelera | Checkouts | Compras | Boletas · HOM_EMB: ... | Sesiones (D) | ... | Estado (H)
+// EMBUDO: Fecha | Mes | Evento | Sesiones | Cartelera | Checkouts | Compras | Boletas · TITULOS_SIN_EVENTO: Título | Sesiones | Checkouts | Compras | Boletas | Estado
 // (si la pestaña no existe, gviz devuelve otra hoja: se valida el encabezado)
 function buildEmb(emb, hom) {
   EMB = []; EMB_PEND = { n: 0, ses: 0, tot: 0 };
@@ -896,9 +896,8 @@ function buildEmb(emb, hom) {
       EMB.push({ d, ev: pn[norm(n)] || n, ses: num(x[3]), cart: num(x[4]), chk: num(x[5]), comp: num(x[6]), bol: num(x[7]) });
     });
   }
-  if (norm(hom[0]?.[7]) === 'ESTADO') hom.slice(1).forEach(x => {
-    const s = num(x[3]); EMB_PEND.tot += s;
-    if (norm(x[7]) === 'PENDIENTE') { EMB_PEND.n++; EMB_PEND.ses += s }
+  if (norm(hom[0]?.[5]) === 'ESTADO') hom.slice(1).forEach(x => {
+    if (num(x[3]) || num(x[2])) { EMB_PEND.n++; EMB_PEND.ses += num(x[3]) }
   });
 }
 const embRows = f => EMB.filter(r => r.d >= f.desde && r.d <= f.hasta && pasaEvento(r.ev, f));
@@ -936,7 +935,7 @@ function renderEmbudo(f) {
   const wrap = document.getElementById('funnel'), side = document.getElementById('emb-side'), foot = document.getElementById('emb-foot');
   const head = document.getElementById('emb-head'), body = document.getElementById('emb-body'), note = document.getElementById('emb-note');
   if (!EMB_OK) {
-    wrap.innerHTML = '<div class="vacio">Falta la pestaña EMBUDO: en la hoja, menú Embudo → Actualizar HOM_EMB y EMBUDO.</div>';
+    wrap.innerHTML = '<div class="vacio">Falta la pestaña EMBUDO: en la hoja, menú Embudo → Actualizar EMBUDO.</div>';
     side.innerHTML = ''; head.innerHTML = ''; body.innerHTML = ''; note.textContent = ''; foot.textContent = ''; return;
   }
   const rs = embRows(f), T = { ses: 0, cart: 0, chk: 0, comp: 0, bol: 0 };
@@ -979,9 +978,9 @@ function renderEmbudo(f) {
       <td class="r ini">${x.ses && x.inv ? money(x.inv / x.ses) : '—'}</td><td class="r">${x.comp && x.inv ? money(x.inv / x.comp) : '—'}</td></tr>`;
     body.innerHTML = lista.map(x => fila(esc(x.ev), x)).join('') + fila('Total', { ...T, inv }, 'tr-total');
   }
-  foot.innerHTML = '<b>Sesiones</b>, <b>Checkout</b> (begin_checkout) y <b>Compras</b> (purchase) son de GA4 y solo cuentan las campañas homologadas en HOM_EMB: el tráfico de otros anunciantes no entra. '
-    + 'Las <b>vistas de cartelera</b> (view_item_list) cuentan eventos, no sesiones, por eso no son una etapa del embudo. Los costos dividen la inversión de Meta de los eventos del embudo entre cada etapa.'
-    + (EMB_PEND.n ? ` <span class="t-mid">Hay ${EMB_PEND.n} campañas de GA4 sin homologar (${pct(EMB_PEND.ses, EMB_PEND.tot)} de las sesiones) que todavía no están en el embudo.</span>` : '');
+  foot.innerHTML = '<b>Sesiones</b>, <b>Checkout</b> (begin_checkout) y <b>Compras</b> (purchase) son de GA4 y cuentan todo el tráfico y todas las compras del sitio por evento, sin importar el medio. '
+    + 'Las <b>vistas de cartelera</b> (view_item_list) cuentan eventos, no sesiones, por eso no son una etapa del embudo. Los costos dividen la inversión de Meta del evento entre todas las sesiones y compras del evento, vengan o no de la pauta.'
+    + (EMB_PEND.n ? ` <span class="t-mid">Hay ${EMB_PEND.n} páginas con ventas sin evento en HOM_PAGINAS que no entran al embudo.</span>` : '');
 }
 
 function renderEmbEvo(f) {
